@@ -154,7 +154,7 @@ public class DrawTools {
         spanY = startY + 1;
         spanLeft = spanRight = startX + 1;
         while (new Color(image.getRGB(startX, spanY)) != borderColor) {
-            while (new Color((spanLeft, spanY)) != borderColor) {
+            while (new Color(image.getRGB(spanLeft, spanY)) != borderColor) {
                 spanLeft--;
             }
             while (new Color(image.getRGB(spanRight, spanY)) != borderColor) {
@@ -169,7 +169,7 @@ public class DrawTools {
             curSpan = stack.pop();
             curSpanSeed = curSpan.getSeed();
             for (int i = curSpan.getLeftBorder() + 1; i < curSpan.getRightBorder(); i++) {
-                image.setRGB(curSpanSeed, i, borderColor);
+                //image.setRGB(curSpanSeed, i, borderColor);
             }
         }
     }

@@ -23,7 +23,7 @@ public class MyPanel extends JPanel {
         g1.setPaint(new Color(0, 0, 0));
         DrawTools.drawField(g1, 6, 5, 20, 1);
         g1.setPaint(new Color(0, 128, 0));
-        DrawTools.spanColoring(image, new Color(0,0,0), new Color(0, 128, 0), 250, 250);
+        //DrawTools.spanColoring(image, new Color(0,0,0), new Color(0, 128, 0), 250, 250);
 
         g.drawImage(image, 0, 0,this);
     }
