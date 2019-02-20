@@ -117,60 +117,6 @@ public class DrawTools {
 
     public static void spanColoring(BufferedImage image, Color borderColor, Color cellColor, int x, int y) {
         Stack<Span> stack = new Stack<>();
-        int spanLeft = x;
-        int spanRight = x;
-        int startX = x;
-        int startY = y;
-        Span curSpan;
-        int curSpanSeed;
 
-        while (new Color(image.getRGB(spanLeft, startY)) != borderColor) {
-            spanLeft--;
-        }
-        while (new Color (image.getRGB(spanRight, startY)) != borderColor) {
-            spanRight++;
-        }
-
-        startX = (spanLeft + spanRight) / 2;
-
-        stack.add(new Span(startX, spanRight, spanLeft));
-
-        int spanY = startY - 1;
-        int spanX = startX - 1;
-        spanLeft = spanRight = spanX;
-        while (new Color(image.getRGB(startX, spanY)) != borderColor) {
-            while (new Color(image.getRGB(spanLeft, spanY)) != borderColor) {
-                spanLeft--;
-            }
-            while (new Color(image.getRGB(spanRight, spanY)) != borderColor) {
-                spanRight++;
-            }
-
-            stack.add(new Span(startX, spanRight, spanLeft));
-            spanY--;
-            spanLeft = spanRight = startX - 1;
-        }
-
-        spanY = startY + 1;
-        spanLeft = spanRight = startX + 1;
-        while (new Color(image.getRGB(startX, spanY)) != borderColor) {
-            while (new Color(image.getRGB(spanLeft, spanY)) != borderColor) {
-                spanLeft--;
-            }
-            while (new Color(image.getRGB(spanRight, spanY)) != borderColor) {
-                spanRight++;
-            }
-
-            stack.add(new Span(startX, spanRight, spanLeft));
-            spanY++;
-        }
-
-        while (!stack.isEmpty()) {
-            curSpan = stack.pop();
-            curSpanSeed = curSpan.getSeed();
-            for (int i = curSpan.getLeftBorder() + 1; i < curSpan.getRightBorder(); i++) {
-                //image.setRGB(curSpanSeed, i, borderColor);
-            }
-        }
     }
 }
