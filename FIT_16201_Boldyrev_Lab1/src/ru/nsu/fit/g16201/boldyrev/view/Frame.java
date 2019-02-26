@@ -45,8 +45,8 @@ public class Frame extends JFrame {
     public Frame() {
         SaveLoad saveload = new SaveLoad();
 
-        n = 10;
-        m = 10;
+        n = 6;
+        m = 6;
         k = 20;
         t = 1;
         WIDTH = 800;
@@ -303,6 +303,12 @@ public class Frame extends JFrame {
             myPanel.setXOR(xorMode);
         };
 
+        ActionListener lNext = l -> {
+            bStop.setSelected(false);
+            bPlay.setSelected(true);
+            myPanel.nextStep();
+        };
+
         bClear.addActionListener(lClear);
         bSave.addActionListener(lSave);
         bOpen.addActionListener(lOpen);
@@ -311,6 +317,7 @@ public class Frame extends JFrame {
         bNew.addActionListener(lNew);
         bXor.addActionListener(lXor);
         bReplace.addActionListener(lReplace);
+        bNext.addActionListener(lNext);
     }
 
     public int getK() {

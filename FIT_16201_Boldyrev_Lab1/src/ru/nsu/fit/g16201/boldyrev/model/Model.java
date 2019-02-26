@@ -12,6 +12,7 @@ public class Model {
     private double SND_IMPACT;
 
     private boolean[][] fieldAlive;
+    private boolean[][] fieldAlivePrevious;
     private double[][] fieldImpact;
     private int n;
     private int m;
@@ -22,6 +23,7 @@ public class Model {
 
         this.fieldAlive = new boolean[n][m];
         this.fieldImpact = new double[n][m];
+        this.fieldAlivePrevious = new boolean[n][m];
         this.LIVE_BEGIN = 2.0;
         this.LIVE_END = 3.3;
         this.BIRTH_BEGIN = 2.3;
@@ -46,12 +48,15 @@ public class Model {
         this.m = m;
     }
 
-    public void nextGeneration() {
+    public void nextImpact() {
         int fstCount = 0;
         int sndCount = 0;
 
         for (int i = 0; i <= n -1; i++) {
             for (int j = 0; j <= m - 1; j++) {
+                fstCount = 0;
+                sndCount = 0;
+
                 if (i - 1 >= 0 && j - 1 >= 0 && fieldAlive[i - 1][j - 1]) {
                     fstCount++;
                 }
@@ -85,46 +90,65 @@ public class Model {
                     sndCount++;
                 }
 
-                if (j - 2 >= 0) {
-                    if ((i - 1 >= 0 && fieldAlive[i - 1][j - 2]) || (i + 1 <= n - 1 && fieldAlive[i + 1][j - 2])) {
-                        sndCount++;
-                    }
-
+//                if (j - 2 >= 0) {
+//                    if ((i - 1 >= 0 && fieldAlive[i - 1][j - 2]) || (i + 1 <= n - 1 && fieldAlive[i + 1][j - 2])) {
+//                        sndCount++;
+//                    }
+//
+//                }
+                if (i - 1 >= 0 && j - 2 >= 0 && fieldAlive[i - 1][j - 2]) {
+                    sndCount++;
                 }
-//                if (i - 1 >= 0 && j - 2 >= 0 && fieldAlive[i - 1][j - 2]) {
-//                    sndCount++;
-//                }
-//                if (i + 1 <= n - 1 && j - 2 >= 0 && fieldAlive[i + 1][j - 2]) {
-//                    sndCount++;
-//                }
-
-                if (i % 2 == 0 && j + 1 <= m - 2) {
-                    if ((i - 1 >= 0 && fieldAlive[i - 1][j + 1]) || (i + 1 <= n - 1 && fieldAlive[i + 1][j + 1])) {
-                        sndCount++;
-                    }
+                if (i + 1 <= n - 1 && j - 2 >= 0 && fieldAlive[i + 1][j - 2]) {
+                    sndCount++;
                 }
-//                if (i % 2 == 0 && i - 1 >= 0 && j + 1 <= m - 2 && fieldAlive[i - 1][j + 1]) {
-//                    sndCount++;
-//                }
-//                if (i % 2 == 0 && i + 1 <= n - 1 && j + 1 <= m - 2 && fieldAlive[i + 1][j + 1]) {
-//                    sndCount++;
-//                }
 
-                if (i % 2 != 0 && j + 1 <= m - 1) {
-                    if ((i - 1 >= 0 && fieldAlive[i - 1][j + 1]) || (i + 1 <= n - 1 && fieldAlive[i + 1][j + 1])) {
-                        sndCount++;
-                    }
+//                if (i % 2 == 0 && j + 1 <= m - 2) {
+//                    if ((i - 1 >= 0 && fieldAlive[i - 1][j + 1]) || (i + 1 <= n - 1 && fieldAlive[i + 1][j + 1])) {
+//                        sndCount++;
+//                    }
+//                }
+                if (i % 2 == 0 && i - 1 >= 0 && j + 1 <= m - 2 && fieldAlive[i - 1][j + 1]) {
+                    sndCount++;
                 }
-//                if (i % 2 != 0 && i - 1 >= 0 && j + 1 <= m - 1 && fieldAlive[i - 1][j + 1]) {
-//                    sndCount++;
+                if (i % 2 == 0 && i + 1 <= n - 1 && j + 1 <= m - 2 && fieldAlive[i + 1][j + 1]) {
+                    sndCount++;
+                }
+
+//                if (i % 2 != 0 && j + 1 <= m - 1) {
+//                    if ((i - 1 >= 0 && fieldAlive[i - 1][j + 1]) || (i + 1 <= n - 1 && fieldAlive[i + 1][j + 1])) {
+//                        sndCount++;
+//                    }
 //                }
-//                if (i % 2 != 0 && i + 1 <= n - 1 && j + 1 <= m - 1 && fieldAlive[i + 1][j + 1]) {
-//                    sndCount++;
-//                }
+                if (i % 2 != 0 && i - 1 >= 0 && j + 1 <= m - 1 && fieldAlive[i - 1][j + 1]) {
+                    sndCount++;
+                }
+                if (i % 2 != 0 && i + 1 <= n - 1 && j + 1 <= m - 1 && fieldAlive[i + 1][j + 1]) {
+                    sndCount++;
+                }
 
                 fieldImpact[i][j] = FST_IMPACT * fstCount * SND_IMPACT * sndCount;
             }
         }
+    }
+
+    public void checkCellsStatus() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (!fieldAlivePrevious[i][j]) {
+                    if (fieldImpact[i][j] >= BIRTH_BEGIN && fieldImpact[i][j] <= BIRTH_END) {
+                        fieldAlive[i][j] = true;
+                    }
+                }
+
+                if (fieldImpact[i][j] < LIVE_BEGIN || fieldImpact[i][j] > LIVE_END) {
+                        fieldAlive[i][j] = false;
+                }
+
+                fieldAlivePrevious[i][j] = fieldAlive[i][j];
+            }
+        }
+
     }
 
     public void invertField() {
@@ -174,7 +198,34 @@ public class Model {
                     Integer[] cell = new Integer[2];
                     cell[0] = i;
                     cell[1] = j;
-                    list.add(cell);
+                    if (!(i % 2 != 0 && j == m - 2)) {
+                        list.add(cell);
+                    }
+                    else {
+                        j++;
+                    }
+                }
+            }
+        }
+
+        return list;
+    }
+
+    public ArrayList<Integer[]> getDeadCells() {
+        ArrayList<Integer[]> list = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (!fieldAlive[i][j]) {
+                    Integer[] cell = new Integer[2];
+                    cell[0] = i;
+                    cell[1] = j;
+                    if (!(i % 2 != 0 && j == m - 2)) {
+                        list.add(cell);
+                    }
+                    else {
+                        j++;
+                    }
                 }
             }
         }

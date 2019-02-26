@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MyPanel extends JPanel {
@@ -261,5 +262,31 @@ public class MyPanel extends JPanel {
 
     public boolean getReplace() {
         return this.replace;
+    }
+
+    public void nextStep() {
+        model.nextImpact();
+        model.checkCellsStatus();
+        ArrayList<Integer[]> aliveCells = model.getAliveCells();
+        ArrayList<Integer[]> deadCells = model.getDeadCells();
+        int i = 0;
+        int j = 0;
+
+        for (i = 0; i < aliveCells.size(); i++) {
+            Integer[] a = aliveCells.get(i);
+            Point b = centersToPixels.get(new Point(a[0], a[1]));
+            if (image.getRGB(b.x, b.y) == deadColor.getRGB()) {
+                DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), b.x, b.y);
+            }
+        }
+        for (i = 0; i < deadCells.size(); i++) {
+            Integer[] a = deadCells.get(i);
+            Point b = centersToPixels.get(new Point(a[0], a[1]));
+            if (image.getRGB(b.x, b.y) == liveColor.getRGB()) {
+                DrawTools.spanColoring(image, liveColor.getRGB(), deadColor.getRGB(), b.x, b.y);
+            }
+        }
+
+        repaint();
     }
 }
