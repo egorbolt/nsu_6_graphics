@@ -1,11 +1,14 @@
 package ru.nsu.fit.g16201.boldyrev.view;
 
+import ru.nsu.fit.g16201.boldyrev.model.Model;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
 public class MyPanel extends JPanel {
     private int n;
@@ -17,16 +20,26 @@ public class MyPanel extends JPanel {
     private Color deadColor;
     private BufferedImage image;
     private Graphics2D g1;
+    private int WIDTH;
+    private int HEIGHT;
 
+    private HashMap<Point, Point> pixelsToCenter;
+    private HashMap<Point, Point> centersToPixels;
+    private Model model;
 
-    public MyPanel(int n, int m, int k, int t, int WIDTH, int HEIGHT) {
+    public MyPanel(int n, int m, int k, int t, int width, int height, Model model) {
+        this.model = model;
         this.n = n;
         this.m = m;
         this.k = k;
+        this.WIDTH = width;
+        this.HEIGHT = height;
         this.thickness = t;
         this.borderColor = Color.BLACK;
         this.liveColor = Color.GREEN;
         this.deadColor = Color.WHITE;
+        this.pixelsToCenter = new HashMap<>();
+        this.centersToPixels = new HashMap<>();
 
         this.image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         this.g1 = image.createGraphics();
@@ -34,22 +47,30 @@ public class MyPanel extends JPanel {
         g1.setColor(new Color(255, 255, 255));
         g1.fillRect(0, 0, WIDTH, HEIGHT);
         g1.setColor(new Color(0, 0, 0));
-        DrawTools.drawField(g1, this.n, this.m, this.k, this.thickness);
-        g1.drawImage(image, 0, 0,this);
+        DrawTools.drawField(g1, this.n, this.m, this.k, this.thickness, this.pixelsToCenter, this.centersToPixels);
         repaint();
 
         addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
                 if (isField(image, borderColor, e.getX(), e.getY())) {
-                    DrawTools.spanColoring(image, Color.white.getRGB(), Color.green.getRGB(), e.getX(), e.getY());
-//                Point p = DrawTools.getCellByCoord(e.getX(), e.getY(), 20);
-                    Double[] d = DrawTools.getCellByCoord(e.getX(), e.getY(), k);
-//                System.out.println(p.getX() + " " + p.getY());
-                    System.out.println(d[0] + " " + d[1]);
+                    if (image.getRGB(e.getX(), e.getY()) != borderColor.getRGB()) {
+                        int x = e.getX();
+                        int y = e.getY();
+                        DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
+                        Point p = DrawTools.getCellbyCoord(image, borderColor.getRGB(), x, y);
+                        if (!pixelsToCenter.containsKey(p)) {
+                            p.x += 1;
+                        }
+                        if (!pixelsToCenter.containsKey(p)) {
+                            p.y += 1;
+                        }
+                        if (!pixelsToCenter.containsKey(p)) {
+                            p.x -= 1;
+                        }
+                        Point p2 = pixelsToCenter.get(p);
+                        model.makeCellAlive(p2.x, p2.y);
+                    }
                     repaint();
-                }
-                else {
-                    System.out.println("not field");
                 }
             }
 
@@ -75,15 +96,25 @@ public class MyPanel extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (isField(image, borderColor, e.getX(), e.getY())) {
-                    DrawTools.spanColoring(image, Color.white.getRGB(), Color.green.getRGB(), e.getX(), e.getY());
-//                Point p = DrawTools.getCellByCoord(e.getX(), e.getY(), 20);
-                    Double[] d = DrawTools.getCellByCoord(e.getX(), e.getY(), k);
-//                System.out.println(p.getX() + " " + p.getY());
-                    System.out.println(d[0] + " " + d[1]);
+                    if (image.getRGB(e.getX(), e.getY()) != borderColor.getRGB()) {
+                        int x = e.getX();
+                        int y = e.getY();
+                        DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
+                        Point p = DrawTools.getCellbyCoord(image, borderColor.getRGB(), x, y);
+                        if (!pixelsToCenter.containsKey(p)) {
+                            p.x += 1;
+                        }
+                        if (!pixelsToCenter.containsKey(p)) {
+                            p.y += 1;
+                        }
+                        if (!pixelsToCenter.containsKey(p)) {
+                            p.x -= 1;
+                        }
+                        Point p2 = pixelsToCenter.get(p);
+                        model.makeCellAlive(p2.x, p2.y);
+                    }
+
                     repaint();
-                }
-                else {
-                    System.out.println("not field");
                 }
             }
 
@@ -98,11 +129,6 @@ public class MyPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-//        g1.setColor(new Color(255, 255, 255));
-//        g1.fillRect(0, 0, 720, 480);
-//        g1.setColor(new Color(0, 0, 0));
-//        DrawTools.drawField(g1, 6, 5, 20, 1);
-//        g1.drawImage(image, 0, 0,this);
     }
 
     @Override
@@ -157,6 +183,28 @@ public class MyPanel extends JPanel {
     }
 
     public void clearField() {
-
+        this.pixelsToCenter = new HashMap<>();
+        this.centersToPixels = new HashMap<>();
+        g1.setColor(Color.white);
+        g1.fillRect(0, 0, WIDTH - 1, HEIGHT - 1);
+        g1.setColor(Color.black);
+        DrawTools.drawField(g1, this.n, this.m, this.k, this.thickness, this.pixelsToCenter, this.centersToPixels);
+        repaint();
     }
+
+    public void colorAliveCells(Model model) {
+        boolean[][] fieldAlive = model.getFieldAlive();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (fieldAlive[i][j]) {
+                    Point a = new Point(i, j);
+                    int x = (int) centersToPixels.get(a).getX();
+                    int y = (int) centersToPixels.get(a).getY();
+                    DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
+                }
+            }
+        }
+    }
+
 }

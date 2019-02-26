@@ -2,6 +2,7 @@ package ru.nsu.fit.g16201.boldyrev.view;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.Stack;
 
 public class DrawTools {
@@ -86,14 +87,16 @@ public class DrawTools {
             g.setStroke(new BasicStroke(1));
         }
 
-        Point[] p = new Point[2];
+        Point[] p = new Point[3];
         p[0] = new Point(x2, y2);
         p[1] = new Point(x4, y4);
+        p[2] = new Point(x1, y1 + k);
 
         return p;
     }
 
-    public static void drawField(Graphics2D g, int n, int m, int k, int thickness) {
+    public static void drawField(Graphics2D g, int n, int m, int k, int thickness, HashMap<Point, Point> centers,
+                    HashMap<Point, Point> pixels) {
         int xInit = 3;
         int yInit = k + 1;
         int xStart = xInit;
@@ -105,6 +108,8 @@ public class DrawTools {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 p = drawHexagon(g, xStart, yStart, k, thickness);
+                centers.put(p[2], new Point(i, j));
+                pixels.put(new Point(i, j), p[2]);
                 if (i % 2 == 0 && j == 0) {
                     xStartOdd = (int) p[1].getX();
                     yStartOdd = (int) p[1].getY();
@@ -135,9 +140,7 @@ public class DrawTools {
         Stack<Span> stack = new Stack<>();
         Span nextSpan;
         int spanLength;
-        int rBorder;
         Span s;
-        int iter = 0;
 
         if (image.getRGB(x, y) == oldColor) {
             s = Span.getSpan(image, x, y, oldColor);
@@ -172,23 +175,53 @@ public class DrawTools {
         }
     }
 
-    public static Double[] getCellByCoord(int x, int y, int k) {
-        int resX = 0;
-        int resY = 0;
+//    public static Double[] getCellByCoord(int x, int y, int k) {
+//        int resX = 0;
+//        int resY = 0;
+//
+//        double q = (Math.sqrt(3) / 3 * x - 1.0 / 3 * y) / k;
+//        double r =  (2.0 / 3 * y) / k;
+//
+////        if (r - 1 < 1) {
+////            resY = (int) Math.floor()
+////        }
+//
+////        int resX = (int) Math.round(q);
+////        int resY = (int) Math.round(r);
+//        Double[] d = new Double[2];
+//        d[0] = q + (int) r / 2;
+//        d[1] = r;
+//        return d;
+////        return new Point((int) q, (int) r);
+//    }
 
-        double q = (Math.sqrt(3) / 3 * x - 1.0 / 3 * y) / k;
-        double r =  (2.0 / 3 * y) / k;
+    public static Point getCellbyCoord(BufferedImage image, int borderColor, int x, int y) {
+        int x1;
+        int x2;
+        int y1;
+        int y2;
+        int xres = 0;
+        int yres = 0;
 
-//        if (r - 1 < 1) {
-//            resY = (int) Math.floor()
-//        }
+        x1 = x;
+        while (image.getRGB(x1, y) != borderColor) {
+            x1--;
+        }
+        x2 = x;
+        while (image.getRGB(x2, y) != borderColor) {
+            x2++;
+        }
+        xres = (x1 + x2) / 2;
+        y1 = y;
+        while (image.getRGB(x, y1) != borderColor) {
+            y1--;
+        }
+        y2 = y;
+        while (image.getRGB(x, y2) != borderColor) {
+            y2++;
+        }
+        yres = (y1 + y2) / 2;
 
-//        int resX = (int) Math.round(q);
-//        int resY = (int) Math.round(r);
-        Double[] d = new Double[2];
-        d[0] = q + (int) r / 2;
-        d[1] = r;
-        return d;
-//        return new Point((int) q, (int) r);
+        return new Point(xres, yres);
     }
 }

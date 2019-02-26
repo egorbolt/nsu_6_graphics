@@ -29,6 +29,22 @@ public class Model {
         this.SND_IMPACT = 0.3;
     }
 
+    public int getN() {
+        return this.n;
+    }
+
+    public int getM() {
+        return this.m;
+    }
+
+    public void setN(int n) {
+        this.n = n;
+    }
+
+    public void setM(int m) {
+        this.m = m;
+    }
+
     public void nextGeneration() {
         int fstCount = 0;
         int sndCount = 0;
@@ -139,12 +155,44 @@ public class Model {
     }
 
     public void clearField() {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                fieldAlive[i][j] = false;
-                fieldImpact[i][j] = 0;
-            }
-        }
+        this.fieldImpact = new double[n][m];
+        this.fieldAlive = new boolean[n][m];
     }
 
+    public void resetField(int n, int m) {
+        this.fieldAlive = new boolean[n][m];
+        this.fieldImpact = new double[n][m];
+    }
+
+    public ArrayList<Integer[]> getAliveCells() {
+        ArrayList<Integer[]> list = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (fieldAlive[i][j]) {
+                    Integer[] cell = new Integer[2];
+                    cell[0] = i;
+                    cell[1] = j;
+                    list.add(cell);
+                }
+            }
+        }
+
+        return list;
+    }
+
+    public void makeCellAlive(int x, int y) {
+        fieldAlive[x][y] = true;
+    }
+
+    public boolean isCellAlive(int x, int y) {
+        if (fieldAlive[x][y]) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean[][] getFieldAlive() {
+        return this.fieldAlive;
+    }
 }

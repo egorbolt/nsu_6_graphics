@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="88253113-e913-494d-9fc2-03482bccf852" name="Default Changelist" comment="" />
+    <list default="true" id="88253113-e913-494d-9fc2-03482bccf852" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FIT_16201_Boldyrev_Lab1/ru/nsu/fit/g16201/boldyrev/model/Model.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FIT_16201_Boldyrev_Lab1/ru/nsu/fit/g16201/boldyrev/model/Model.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FIT_16201_Boldyrev_Lab1/ru/nsu/fit/g16201/boldyrev/view/DrawTools.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FIT_16201_Boldyrev_Lab1/ru/nsu/fit/g16201/boldyrev/view/DrawTools.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FIT_16201_Boldyrev_Lab1/ru/nsu/fit/g16201/boldyrev/view/Frame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FIT_16201_Boldyrev_Lab1/ru/nsu/fit/g16201/boldyrev/view/Frame.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FIT_16201_Boldyrev_Lab1/ru/nsu/fit/g16201/boldyrev/view/MyPanel$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FIT_16201_Boldyrev_Lab1/ru/nsu/fit/g16201/boldyrev/view/MyPanel$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FIT_16201_Boldyrev_Lab1/ru/nsu/fit/g16201/boldyrev/view/MyPanel$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FIT_16201_Boldyrev_Lab1/ru/nsu/fit/g16201/boldyrev/view/MyPanel$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FIT_16201_Boldyrev_Lab1/ru/nsu/fit/g16201/boldyrev/view/MyPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FIT_16201_Boldyrev_Lab1/ru/nsu/fit/g16201/boldyrev/view/MyPanel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/model/Model.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/model/Model.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/DrawTools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/DrawTools.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/Frame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/Frame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/MyPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/MyPanel.java" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,20 +26,43 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/model/Model.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="424">
-              <caret line="146" column="9" lean-forward="true" selection-start-line="146" selection-start-column="9" selection-end-line="146" selection-end-column="9" />
+            <state relative-caret-position="2460">
+              <caret line="172" column="52" selection-start-line="172" selection-start-column="52" selection-end-line="172" selection-end-column="52" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/Frame.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="215">
+              <caret line="83" lean-forward="true" selection-start-line="83" selection-end-line="83" />
               <folding>
-                <element signature="method#nextGeneration#0;class#Model#0" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#9711#9712#0" expanded="true" />
+                <element signature="e#9765#9766#0" expanded="true" />
+                <element signature="e#9822#9823#0" expanded="true" />
+                <element signature="e#9879#9880#0" expanded="true" />
+                <element signature="e#9936#9937#0" expanded="true" />
+                <element signature="e#9993#9994#0" expanded="true" />
+                <element signature="e#15866#16103#0" expanded="true" />
+                <element signature="e#16102#16103#0" expanded="true" />
+                <element signature="e#16137#16374#0" expanded="true" />
+                <element signature="e#16373#16374#0" expanded="true" />
+                <element signature="e#16408#16645#0" expanded="true" />
+                <element signature="e#16644#16645#0" expanded="true" />
+                <element signature="e#16679#16916#0" expanded="true" />
+                <element signature="e#16915#16916#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/Frame.java">
+        <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/IntegerFilter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="453">
-              <caret line="217" selection-start-line="217" selection-end-line="217" />
+            <state relative-caret-position="240">
+              <caret line="16" column="13" lean-forward="true" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -35,16 +70,42 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/MyPanel.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/DoubleFilter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="754">
-              <caret line="159" column="8" selection-start-line="159" selection-start-column="8" selection-end-line="159" selection-end-column="8" />
+            <state relative-caret-position="330">
+              <caret line="22" column="1" selection-start-line="22" selection-start-column="1" selection-end-line="22" selection-end-column="1" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3432#3433#0" expanded="true" />
-                <element signature="e#3478#3479#0" expanded="true" />
-                <element signature="e#3554#3555#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/utilities/SaveLoad.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="56" column="58" selection-start-line="56" selection-start-column="58" selection-end-line="56" selection-end-column="58" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/MyPanel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2505">
+              <caret line="207" selection-start-line="207" selection-end-line="207" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#4428#4429#0" expanded="true" />
+                <element signature="e#4474#4475#0" expanded="true" />
+                <element signature="e#4511#4512#0" expanded="true" />
+                <element signature="e#4550#4551#0" expanded="true" />
+                <element signature="method#isField#0;class#MyPanel#0" />
               </folding>
             </state>
           </provider>
@@ -62,8 +123,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/DrawTools.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="168">
-              <caret line="105" selection-start-line="105" selection-end-line="105" />
+            <state relative-caret-position="1620">
+              <caret line="111" column="50" selection-start-line="111" selection-start-column="50" selection-end-line="111" selection-end-column="50" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -110,13 +171,16 @@
         <option value="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/CustomMouseListener.java" />
         <option value="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/Field.java" />
         <option value="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/DrawTools.java" />
-        <option value="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/model/Model.java" />
-        <option value="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/Frame.java" />
         <option value="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/MyPanel.java" />
+        <option value="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/model/Model.java" />
+        <option value="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/utilities/SaveLoad.java" />
+        <option value="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/DoubleFilter.java" />
+        <option value="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/IntegerFilter.java" />
+        <option value="$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/Frame.java" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="y" value="30" />
     <option name="width" value="960" />
     <option name="height" value="1050" />
@@ -127,6 +191,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -163,14 +229,13 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RunDashboard">
@@ -220,24 +285,26 @@
       <workItem from="1550847861836" duration="30563000" />
       <workItem from="1551022186480" duration="8803000" />
       <workItem from="1551031111294" duration="26323000" />
+      <workItem from="1551167543094" duration="24604000" />
+      <workItem from="1551197294367" duration="5003000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="69495000" />
+    <option name="totallyTimeSpent" value="99102000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="30" width="1922" height="1051" extended-state="6" />
+    <frame x="0" y="30" width="960" height="1050" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Designer" order="0" />
       <window_info id="UI Designer" order="1" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info id="Structure" order="3" side_tool="true" weight="0.25" />
-      <window_info content_ui="combo" id="Project" order="4" weight="0.505303" />
+      <window_info content_ui="combo" id="Project" order="4" weight="0.50438595" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32901832" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32470334" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32829374" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.5172786" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39805827" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -259,18 +326,18 @@
       <window_info id="UI Designer" order="1" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info id="Structure" order="3" side_tool="true" weight="0.25" />
-      <window_info active="true" content_ui="combo" id="Project" order="4" visible="true" weight="0.505303" />
+      <window_info active="true" content_ui="combo" id="Project" order="4" visible="true" weight="0.50438595" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32901832" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.4894309" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.398374" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32829374" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.5173611" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39848813" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="10" weight="0.32520324" />
+      <window_info anchor="bottom" id="Messages" order="10" weight="0.32470334" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -284,16 +351,16 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/Frame.java</url>
-          <line>216</line>
+          <url>file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/utilities/SaveLoad.java</url>
+          <line>24</line>
           <properties />
-          <option name="timeStamp" value="36" />
+          <option name="timeStamp" value="61" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/MyPanel.java</url>
-          <line>38</line>
+          <url>file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/utilities/SaveLoad.java</url>
+          <line>28</line>
           <properties />
-          <option name="timeStamp" value="37" />
+          <option name="timeStamp" value="71" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -318,32 +385,27 @@
     <entry file="file://$PROJECT_DIR$/src/resources/about.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/Span.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="36" selection-start-line="36" selection-end-line="36" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/DrawTools.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="105" selection-start-line="105" selection-end-line="105" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
+    <entry file="jrt:///usr/lib/jvm/java-1.11.0-openjdk-amd64!/java.desktop/javax/swing/filechooser/FileNameExtensionFilter.class">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/model/Model.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="424">
-          <caret line="146" column="9" lean-forward="true" selection-start-line="146" selection-start-column="9" selection-end-line="146" selection-end-column="9" />
+        <state relative-caret-position="2460">
+          <caret line="172" column="52" selection-start-line="172" selection-start-column="52" selection-end-line="172" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/MyPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2505">
+          <caret line="207" selection-start-line="207" selection-end-line="207" />
           <folding>
-            <element signature="method#nextGeneration#0;class#Model#0" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#4428#4429#0" expanded="true" />
+            <element signature="e#4474#4475#0" expanded="true" />
+            <element signature="e#4511#4512#0" expanded="true" />
+            <element signature="e#4550#4551#0" expanded="true" />
+            <element signature="method#isField#0;class#MyPanel#0" />
           </folding>
         </state>
       </provider>
@@ -355,25 +417,76 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/Frame.java">
+    <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/DrawTools.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="453">
-          <caret line="217" selection-start-line="217" selection-end-line="217" />
+        <state relative-caret-position="1620">
+          <caret line="111" column="50" selection-start-line="111" selection-start-column="50" selection-end-line="111" selection-end-column="50" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/MyPanel.java">
+    <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/Span.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="754">
-          <caret line="159" column="8" selection-start-line="159" selection-start-column="8" selection-end-line="159" selection-end-column="8" />
+        <state relative-caret-position="435">
+          <caret line="36" selection-start-line="36" selection-end-line="36" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3432#3433#0" expanded="true" />
-            <element signature="e#3478#3479#0" expanded="true" />
-            <element signature="e#3554#3555#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/utilities/SaveLoad.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="56" column="58" selection-start-line="56" selection-start-column="58" selection-end-line="56" selection-end-column="58" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/DoubleFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="1" selection-start-line="22" selection-start-column="1" selection-end-line="22" selection-end-column="1" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/IntegerFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="13" lean-forward="true" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ru/nsu/fit/g16201/boldyrev/view/Frame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="215">
+          <caret line="83" lean-forward="true" selection-start-line="83" selection-end-line="83" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#9711#9712#0" expanded="true" />
+            <element signature="e#9765#9766#0" expanded="true" />
+            <element signature="e#9822#9823#0" expanded="true" />
+            <element signature="e#9879#9880#0" expanded="true" />
+            <element signature="e#9936#9937#0" expanded="true" />
+            <element signature="e#9993#9994#0" expanded="true" />
+            <element signature="e#15866#16103#0" expanded="true" />
+            <element signature="e#16102#16103#0" expanded="true" />
+            <element signature="e#16137#16374#0" expanded="true" />
+            <element signature="e#16373#16374#0" expanded="true" />
+            <element signature="e#16408#16645#0" expanded="true" />
+            <element signature="e#16644#16645#0" expanded="true" />
+            <element signature="e#16679#16916#0" expanded="true" />
+            <element signature="e#16915#16916#0" expanded="true" />
           </folding>
         </state>
       </provider>
