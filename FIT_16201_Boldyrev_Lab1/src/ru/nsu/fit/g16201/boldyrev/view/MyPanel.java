@@ -24,6 +24,7 @@ public class MyPanel extends JPanel {
     private int HEIGHT;
     private boolean xor;
     private boolean replace;
+    private short[][] wasChanged;
 
     private HashMap<Point, Point> pixelsToCenter;
     private HashMap<Point, Point> centersToPixels;
@@ -44,6 +45,8 @@ public class MyPanel extends JPanel {
         this.centersToPixels = new HashMap<>();
         this.xor = false;
         this.replace = true;
+        this.wasChanged = new short[n][m];
+
 
         this.image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         this.g1 = image.createGraphics();
@@ -60,7 +63,6 @@ public class MyPanel extends JPanel {
                     if (image.getRGB(e.getX(), e.getY()) != borderColor.getRGB()) {
                         int x = e.getX();
                         int y = e.getY();
-                        DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
                         Point p = DrawTools.getCellbyCoord(image, borderColor.getRGB(), x, y);
                         if (!pixelsToCenter.containsKey(p)) {
                             p.x += 1;
@@ -72,7 +74,23 @@ public class MyPanel extends JPanel {
                             p.x -= 1;
                         }
                         Point p2 = pixelsToCenter.get(p);
-                        model.makeCellAlive(p2.x, p2.y);
+                        if (replace && !xor) {
+
+                            DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
+
+
+                            model.makeCellAlive(p2.x, p2.y);
+                        }
+                        else if (xor && !replace) {
+                            if (image.getRGB(x, y) == liveColor.getRGB()) {
+                                DrawTools.spanColoring(image, liveColor.getRGB(), deadColor.getRGB(), x, y);
+                                model.makeCellDead(p2.x, p2.y);
+                            }
+                            else if (image.getRGB(x, y) == deadColor.getRGB()) {
+                                DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
+                                model.makeCellAlive(p2.x, p2.y);
+                            }
+                        }
                     }
                     repaint();
                 }
@@ -91,7 +109,7 @@ public class MyPanel extends JPanel {
             }
 
             public void mouseReleased(MouseEvent e) {
-
+                wasChanged = new short[n][m];
             }
 
         });
@@ -101,9 +119,9 @@ public class MyPanel extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 if (isField(image, borderColor, e.getX(), e.getY())) {
                     if (image.getRGB(e.getX(), e.getY()) != borderColor.getRGB()) {
+
                         int x = e.getX();
                         int y = e.getY();
-                        DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
                         Point p = DrawTools.getCellbyCoord(image, borderColor.getRGB(), x, y);
                         if (!pixelsToCenter.containsKey(p)) {
                             p.x += 1;
@@ -115,11 +133,27 @@ public class MyPanel extends JPanel {
                             p.x -= 1;
                         }
                         Point p2 = pixelsToCenter.get(p);
-                        model.makeCellAlive(p2.x, p2.y);
+                        if (replace && !xor) {
+                            DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
+                            model.makeCellAlive(p2.x, p2.y);
+                        }
+                        else if (xor && !replace) {
+                            int co = image.getRGB(x, y);
+                            if (co == liveColor.getRGB() && wasChanged[p2.x][p2.y] != 2) {
+                                DrawTools.spanColoring(image, liveColor.getRGB(), deadColor.getRGB(), x, y);
+                                model.makeCellDead(p2.x, p2.y);
+                                wasChanged[p2.x][p2.y] = 1;
+                            }
+                            else if (co == deadColor.getRGB() && wasChanged[p2.x][p2.y] != 1) {
+                                DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
+                                model.makeCellAlive(p2.x, p2.y);
+                                wasChanged[p2.x][p2.y] = 2;
+                            }
+                        }
                     }
-
                     repaint();
                 }
+
             }
 
             @Override
@@ -213,6 +247,7 @@ public class MyPanel extends JPanel {
 
     public void setXOR(boolean s) {
         this.xor = s;
+        this.replace = !s;
     }
 
     public boolean getXOR() {
@@ -221,6 +256,7 @@ public class MyPanel extends JPanel {
 
     public void setReplace(boolean s) {
         this.replace = s;
+        this.xor = !s;
     }
 
     public boolean getReplace() {

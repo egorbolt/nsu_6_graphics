@@ -1,6 +1,7 @@
 package ru.nsu.fit.g16201.boldyrev.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Model {
     private double LIVE_BEGIN;
@@ -185,6 +186,8 @@ public class Model {
         fieldAlive[x][y] = true;
     }
 
+    public void makeCellDead(int x, int y) { fieldAlive[x][y] = false; }
+
     public boolean isCellAlive(int x, int y) {
         if (fieldAlive[x][y]) {
             return true;
@@ -195,4 +198,5 @@ public class Model {
     public boolean[][] getFieldAlive() {
         return this.fieldAlive;
     }
+
 }

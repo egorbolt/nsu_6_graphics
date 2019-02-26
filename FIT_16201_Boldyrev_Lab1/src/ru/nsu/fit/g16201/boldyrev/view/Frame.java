@@ -252,6 +252,9 @@ public class Frame extends JFrame {
             myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
             panel.add(myPanel);
             myPanel.colorAliveCells(model);
+            xorMode = false;
+            bXor.setSelected(false);
+            bReplace.setSelected(true);
             pack();
         };
 
@@ -272,6 +275,9 @@ public class Frame extends JFrame {
             myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
             panel.add(myPanel);
             myPanel.colorAliveCells(model);
+            xorMode = false;
+            bXor.setSelected(false);
+            bReplace.setSelected(true);
             pack();
         };
 
@@ -283,12 +289,28 @@ public class Frame extends JFrame {
                        "About", JOptionPane.INFORMATION_MESSAGE);
         };
 
+        ActionListener lXor = l -> {
+            xorMode = true;
+            bXor.setSelected(xorMode);
+            bReplace.setSelected(!xorMode);
+            myPanel.setXOR(xorMode);
+        };
+
+        ActionListener lReplace = l -> {
+            xorMode = false;
+            bXor.setSelected(xorMode);
+            bReplace.setSelected(!xorMode);
+            myPanel.setXOR(xorMode);
+        };
+
         bClear.addActionListener(lClear);
         bSave.addActionListener(lSave);
         bOpen.addActionListener(lOpen);
         bOptions.addActionListener(lOptions);
         bAbout.addActionListener(lAbout);
         bNew.addActionListener(lNew);
+        bXor.addActionListener(lXor);
+        bReplace.addActionListener(lReplace);
     }
 
     public int getK() {
