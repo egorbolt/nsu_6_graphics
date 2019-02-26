@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.Stack;
 
 public class DrawTools {
-    public static void drawBresenham(Graphics g, int x0, int y0, int x1, int y1) {
+    public static void drawBresenham(Graphics2D g, int x0, int y0, int x1, int y1) {
         int dx = x1 - x0;
         int dy = y1 - y0;
         int directionX = Integer.compare(dx, 0);
@@ -55,7 +55,7 @@ public class DrawTools {
         }
     }
 
-    public static void drawHexagon(Graphics g, int x0, int y0, int k, int thickness) {
+    public static Point[] drawHexagon(Graphics2D g, int x0, int y0, int k, int thickness) {
         int x1 = x0 + (int)(k * Math.sqrt(3) / 2);
         int y1 = y0 - k / 2;
         int x2 = x1 + (int)(k * Math.sqrt(3) / 2);
@@ -76,47 +76,119 @@ public class DrawTools {
             DrawTools.drawBresenham(g, x5, y5, x0, y0);
         }
         else {
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setStroke(new BasicStroke(thickness));
-            g2d.drawLine(x0, y0, x1, y1);
-            g2d.drawLine(x1, y1, x2, y2);
-            g2d.drawLine(x2, y2, x3, y3);
-            g2d.drawLine(x3, y3, x4, y4);
-            g2d.drawLine(x4, y4, x5, y5);
-            g2d.drawLine(x5, y5, x0, y0);
+            g.setStroke(new BasicStroke(thickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g.drawLine(x0, y0, x1, y1);
+            g.drawLine(x1, y1, x2, y2);
+            g.drawLine(x2, y2, x3, y3);
+            g.drawLine(x3, y3, x4, y4);
+            g.drawLine(x4, y4, x5, y5);
+            g.drawLine(x5, y5, x0, y0);
+            g.setStroke(new BasicStroke(1));
         }
+
+        Point[] p = new Point[2];
+        p[0] = new Point(x2, y2);
+        p[1] = new Point(x4, y4);
+
+        return p;
     }
 
-    public static void drawField(Graphics g, int n, int m, int k, int thickness) {
-        int xInitEven = 3;
-        int yInitEven = k / 2 + 3;
-        int xInitOdd = (int)(k * Math.sqrt(3) / 2) + 3;
-        int yInitOdd = k * 2 + 3;
-        int xStart = xInitEven;
-        int yStart = yInitEven;
-        int xNext = (int)(k * Math.sqrt(3));
+    public static void drawField(Graphics2D g, int n, int m, int k, int thickness) {
+        int xInit = 3;
+        int yInit = k + 1;
+        int xStart = xInit;
+        int yStart = yInit;
+        int xStartOdd = 0;
+        int yStartOdd = 0;
+        Point[] p;
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                drawHexagon(g, xStart, yStart, k, thickness);
-                xStart += xNext;
+                p = drawHexagon(g, xStart, yStart, k, thickness);
+                if (i % 2 == 0 && j == 0) {
+                    xStartOdd = (int) p[1].getX();
+                    yStartOdd = (int) p[1].getY();
+                    xInit = xStart;
+                    yInit = yStart;
+                }
+                xStart = (int) p[0].getX();
                 if (i % 2 != 0 && j == m - 2) {
                     j++;
                 }
             }
             if (i % 2 == 0) {
-                xStart = xInitOdd;
-                yStart = yInitOdd + k * 3 * (i / 2);
+                xStart = xStartOdd;
+                yStart = yStartOdd;
             }
             else {
-                xStart = xInitEven;
-                yStart = yInitEven + k * 3 * (i / 2 + 1);
+                xStart = xInit;
+                yStart = yInit + 3 * k;
+                if (k % 2 != 0) {
+                    yStart -= 1;
+                }
+            }
+
+        }
+    }
+
+    public static void spanColoring(BufferedImage image, int oldColor, int newColor, int x, int y) {
+        Stack<Span> stack = new Stack<>();
+        Span nextSpan;
+        int spanLength;
+        int rBorder;
+        Span s;
+        int iter = 0;
+
+        if (image.getRGB(x, y) == oldColor) {
+            s = Span.getSpan(image, x, y, oldColor);
+            stack.push(s);
+        }
+
+        while (!stack.empty()) {
+            s = stack.pop();
+            int seedY = s.getSeed();
+            for (int i = s.getLeftBorder(); i <= s.getRightBorder(); i++) {
+                image.setRGB(i, seedY, newColor);
+                if (image.getRGB(i, seedY - 1) == oldColor) {
+                    nextSpan = Span.getSpan(image, i, seedY - 1, oldColor);
+                    spanLength = nextSpan.getSpanLength();
+                    for (int j = 0; j < spanLength - 1; j++) {
+                        if (i <= s.getRightBorder()) {
+                            image.setRGB(i, seedY, newColor);
+                            i++;
+                        }
+                    }
+                    stack.push(nextSpan);
+                }
+            }
+            for (int i = s.getLeftBorder(); i <= s.getRightBorder(); i++) {
+                if (image.getRGB(i, seedY + 1) == oldColor) {
+                    nextSpan = Span.getSpan(image, i, seedY + 1, oldColor);
+                    spanLength = nextSpan.getSpanLength();
+                    i += spanLength;
+                    stack.push(nextSpan);
+                }
             }
         }
     }
 
-    public static void spanColoring(BufferedImage image, Color borderColor, Color cellColor, int x, int y) {
-        Stack<Span> stack = new Stack<>();
+    public static Double[] getCellByCoord(int x, int y, int k) {
+        int resX = 0;
+        int resY = 0;
 
+        double q = (Math.sqrt(3) / 3 * x - 1.0 / 3 * y) / k;
+        double r =  (2.0 / 3 * y) / k;
+
+//        if (r - 1 < 1) {
+//            resY = (int) Math.floor()
+//        }
+
+//        int resX = (int) Math.round(q);
+//        int resY = (int) Math.round(r);
+        Double[] d = new Double[2];
+        d[0] = q + (int) r / 2;
+        d[1] = r;
+        return d;
+//        return new Point((int) q, (int) r);
     }
 }

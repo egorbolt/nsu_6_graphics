@@ -1,4 +1,4 @@
-package ru.nsu.fit.g16201.boldyrev.resources;
+package ru.nsu.fit.g16201.boldyrev;
 
 import ru.nsu.fit.g16201.boldyrev.view.Frame;
 

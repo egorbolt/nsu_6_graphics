@@ -18,6 +18,7 @@ public class Model {
     public Model(int n, int m) {
         this.n = n;
         this.m = m;
+
         this.fieldAlive = new boolean[n][m];
         this.fieldImpact = new double[n][m];
         this.LIVE_BEGIN = 2.0;
@@ -134,6 +135,15 @@ public class Model {
         }
         else {
             return false;
+        }
+    }
+
+    public void clearField() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                fieldAlive[i][j] = false;
+                fieldImpact[i][j] = 0;
+            }
         }
     }
 

@@ -1,6 +1,10 @@
 package ru.nsu.fit.g16201.boldyrev.view;
 
+import ru.nsu.fit.g16201.boldyrev.model.Model;
+
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,255 +12,212 @@ import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 
 public class Frame extends JFrame {
+    private double LIVE_BEGIN;
+    private double LIVE_END;
+    private double BIRTH_BEGIN;
+    private double BIRTH_END;
+    private double FST_IMPACT;
+    private double SND_IMPACT;
+    private int n;
+    private int m;
+    private int k;
+    private int t;
+
+    private Color liveColor;
+    private Color deadColor;
+    private JFrame frame;
     private JMenuBar menuBar;
     private JToolBar toolBar;
+    private JScrollPane scrollPane;
+
+    private boolean xorMode = false;
+    private boolean impacts = false;
+    private boolean saved = false;
+    private boolean needUpdating = false;
+
+    private int WIDTH;
+    private int HEIGHT;
+
+    private Model model;
+
 
     public Frame() {
-        super("Life");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(720, 480));
+        n = 50;
+        m = 50;
+        k = 15;
+        t = 1;
+        WIDTH = 800;
+        HEIGHT = 600;
+        model = new Model(n, m);
 
+        frame = new JFrame();
+        frame.setPreferredSize(new Dimension(800, 600));
+        frame.setMinimumSize(new Dimension(800, 600));
+        frame.setLayout(new BorderLayout());
+        frame.setTitle("Life");
+        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+//        menuBar = createMenuBar();
+//        toolBar = createToolBar();
+
+        /*creating toolBar*/
+        toolBar = new JToolBar();
+        toolBar.setRollover(true);
+        ButtonGroup group1 = new ButtonGroup();
+        ButtonGroup group2 = new ButtonGroup();
+
+        JButton bNew = new JButton(new ImageIcon("src/resources/new.png"));
+        bNew.setToolTipText("New");
+        toolBar.add(bNew);
+
+        JButton bOpen = new JButton(new ImageIcon("src/resources/open.png"));
+        bNew.setToolTipText("Open");
+        toolBar.add(bOpen);
+
+        JButton bSave = new JButton(new ImageIcon("src/resources/save.png"));
+        bNew.setToolTipText("Save");
+        toolBar.add(bSave);
+
+        toolBar.add(new JToolBar.Separator());
+
+        JButton bNext = new JButton(new ImageIcon("src/resources/next.png"));
+        bNext.setToolTipText("Next");
+        bNext.setSelected(false);
+        toolBar.add(bNext);
+
+        JButton bClear = new JButton(new ImageIcon("src/resources/clear.png"));
+        bClear.setToolTipText("Clear");
+        toolBar.add(bClear);
+
+        JToggleButton bImpacts = new JToggleButton(new ImageIcon("src/resources/impacts.png"));
+        bImpacts.setToolTipText("Impacts");
+        bImpacts.setSelected(impacts);
+        toolBar.add(bImpacts);
+
+        toolBar.add(new JToolBar.Separator());
+
+        JToggleButton bPlay = new JToggleButton(new ImageIcon("src/resources/play.png"));
+        bPlay.setToolTipText("Play");
+        bPlay.setSelected(false);
+        group1.add(bPlay);
+        toolBar.add(bPlay);
+
+        JToggleButton bStop = new JToggleButton(new ImageIcon("src/resources/stop.png"));
+        bStop.setToolTipText("Stop");
+        bStop.setSelected(true);
+        group1.add(bStop);
+        toolBar.add(bStop);
+
+        toolBar.add(new JToolBar.Separator());
+
+        JToggleButton bReplace = new JToggleButton(new ImageIcon("src/resources/replace.png"));
+        bReplace.setToolTipText("Replace");
+        bReplace.setSelected(!xorMode);
+        group2.add(bReplace);
+        toolBar.add(bReplace);
+
+        JToggleButton bXor = new JToggleButton(new ImageIcon("src/resources/xor.png"));
+        bXor.setToolTipText("Xor");
+        bReplace.setSelected(xorMode);
+        group2.add(bXor);
+        toolBar.add(bXor);
+
+        toolBar.add(new JToolBar.Separator());
+
+        JButton bOptions = new JButton(new ImageIcon("src/resources/options.png"));
+        bOptions.setToolTipText("Options");
+        toolBar.add(bOptions);
+
+        JButton bAbout = new JButton(new ImageIcon("src/resources/about.png"));
+        bAbout.setToolTipText("About");
+        toolBar.add(bAbout);
+        /*end of creating toolBar*/
+
+        /*creating menuBar*/
         menuBar = new JMenuBar();
-        JMenu menu = new JMenu("File");
-        menuBar.add(menu);
-        JMenuItem menuItem = new JMenuItem("Open");
-        menu.add(menuItem);
-        menuItem.addActionListener(e -> JOptionPane.showMessageDialog(Frame.this, "Test Message"));
-        setJMenuBar(menuBar);
+        ButtonGroup group3 = new ButtonGroup();
 
-        MyPanel myPanel = new MyPanel();
-        add(myPanel);
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem jmiNG = new JMenuItem("New Game");
+        fileMenu.add(jmiNG);
+        JMenuItem jmOpen = new JMenuItem("Open");
+        fileMenu.add(jmOpen);
+        JMenuItem jmSave = new JMenuItem("Save");
+        fileMenu.add(jmSave);
+        JMenuItem jmSaveAs = new JMenuItem("Save As...");
+        fileMenu.add(jmSaveAs);
+        fileMenu.addSeparator();
+        JMenuItem jmExit= new JMenuItem("Exit");
+        jmExit.addActionListener(e -> { System.exit(0);});
+        fileMenu.add(jmExit);
 
-        pack();
-        setLocationRelativeTo(null); //center the frame
-        setVisible(true);
-    }
+//        JMenu modifyMenu = new JMenu("Modify");
+//        JMenuItem jmOptions = new JMenuItem("Options");
+//        modifyMenu.add(jmOptions);
+//        JMenuItem jmReplace = new JCheckBoxMenuItem("Replace");
+//        jmReplace.setSelected(!xorMode);
+//        modifyMenu.add(jmReplace);
+//        group3.add(jmReplace);
+//        JMenuItem jmXOR = new JCheckBoxMenuItem("XOR");
+//        jmXOR.setSelected(xorMode);
+//        modifyMenu.add(jmXOR);
+//        group3.add(jmXOR);
+//        JMenuItem jmImpacts = new JCheckBoxMenuItem("Impacts");
+//        jmImpacts.setSelected(impacts);
+//        modifyMenu.add(jmImpacts);
 
-    public JMenuItem createMenuItem(String title, String tooltip, int mnemonic, String icon, String actionMethod) throws SecurityException, NoSuchMethodException
-    {
-        JMenuItem item = new JMenuItem(title);
-        item.setMnemonic(mnemonic);
-        item.setToolTipText(tooltip);
-        if(icon != null)
-            item.setIcon(new ImageIcon(getClass().getResource("resources/"+icon), title));
-        final Method method = getClass().getMethod(actionMethod);
-        item.addActionListener(new ActionListener() {
+        JMenu actionMenu = new JMenu("Action");
+        JMenuItem jmNext = new JMenuItem("Next step");
+        actionMenu.add(jmNext);
+        JMenuItem jmRun = new JMenuItem("Play");
+        actionMenu.add(jmRun);
+        JMenuItem jmStop = new JMenuItem("Stop");
+        actionMenu.add(jmStop);
+        actionMenu.addSeparator();
+        JMenuItem jmClear = new JMenuItem("Clear");
+        actionMenu.add(jmClear);
+        JMenu helpMenu = new JMenu("Help");
+        JMenuItem jmiAbout = new JMenuItem("About");
+        helpMenu.add(jmiAbout);
 
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                try {
-                    method.invoke(Frame.this);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        return item;
-    }
+        menuBar.add(fileMenu);
+        menuBar.add(actionMenu);
+//        menuBar.add(modifyMenu);
+        menuBar.add(helpMenu);
+        /*end of creating menuBar*/
 
-    /**
-     * Shortcut method to create menu item (without icon)
-     * Note that you have to insert it into proper place by yourself
-     * @param title - menu item title
-     * @param tooltip - floating tooltip describing menu item
-     * @param mnemonic - mnemonic key to activate item via keyboard
-     * @param actionMethod - String containing method name which will be called when menu item is activated (method should not take any parameters)
-     * @return created menu item
-     * @throws NoSuchMethodException - when actionMethod method not found
-     * @throws SecurityException - when actionMethod method is inaccessible
-     */
-    public JMenuItem createMenuItem(String title, String tooltip, int mnemonic, String actionMethod) throws SecurityException, NoSuchMethodException
-    {
-        return createMenuItem(title, tooltip, mnemonic, null, actionMethod);
-    }
+        frame.setJMenuBar(menuBar);
+        frame.add(toolBar, BorderLayout.NORTH);
 
-    /**
-     * Creates submenu and returns it
-     * @param title - submenu title
-     * @param mnemonic - mnemonic key to activate submenu via keyboard
-     * @return created submenu
-     */
-    public JMenu createSubMenu(String title, int mnemonic)
-    {
-        JMenu menu = new JMenu(title);
-        menu.setMnemonic(mnemonic);
-        return menu;
-    }
-
-    /**
-     * Creates submenu and inserts it to the specified location
-     * @param title - submenu title with full path (just submenu title for top-level submenus)
-     * example: "File/New" - will create submenu "New" under menu "File" (provided that menu "File" was previously created)
-     * @param mnemonic - mnemonic key to activate submenu via keyboard
-     */
-    public void addSubMenu(String title, int mnemonic) {
-        MenuElement element = getParentMenuElement(title);
-        if(element == null)
-            throw new InvalidParameterException("Menu path not found: "+title);
-        JMenu subMenu = createSubMenu(getMenuPathName(title), mnemonic);
-        if(element instanceof JMenuBar)
-            ((JMenuBar)element).add(subMenu);
-        else if(element instanceof JMenu)
-            ((JMenu)element).add(subMenu);
-        else if(element instanceof JPopupMenu)
-            ((JPopupMenu)element).add(subMenu);
-        else
-            throw new InvalidParameterException("Invalid menu path: "+title);
-    }
-
-    /**
-     * Creates menu item and adds it to the specified menu location
-     * @param title - menu item title with full path
-     * @param tooltip - floating tooltip describing menu item
-     * @param mnemonic - mnemonic key to activate item via keyboard
-     * @param icon - file name containing icon (must be located in 'resources' subpackage relative to your implementation of MainFrame), can be null
-     * @param actionMethod - String containing method name which will be called when menu item is activated (method should not take any parameters)
-     * @throws NoSuchMethodException - when actionMethod method not found
-     * @throws SecurityException - when actionMethod method is inaccessible
-     * @throws InvalidParameterException - when specified menu location not found
-     */
-    public void addMenuItem(String title, String tooltip, int mnemonic, String icon, String actionMethod) throws SecurityException, NoSuchMethodException
-    {
-        MenuElement element = getParentMenuElement(title);
-        if(element == null)
-            throw new InvalidParameterException("Menu path not found: "+title);
-        JMenuItem item = createMenuItem(getMenuPathName(title), tooltip, mnemonic, icon, actionMethod);
-        if(element instanceof JMenu)
-            ((JMenu)element).add(item);
-        else if(element instanceof JPopupMenu)
-            ((JPopupMenu)element).add(item);
-        else
-            throw new InvalidParameterException("Invalid menu path: "+title);
-    }
-
-    /**
-     * Creates menu item (without icon) and adds it to the specified menu location
-     * @param title - menu item title with full path
-     * @param tooltip - floating tooltip describing menu item
-     * @param mnemonic - mnemonic key to activate item via keyboard
-     * @param actionMethod - String containing method name which will be called when menu item is activated (method should not take any parameters)
-     * @throws NoSuchMethodException - when actionMethod method not found
-     * @throws SecurityException - when actionMethod method is inaccessible
-     * @throws InvalidParameterException - when specified menu location not found
-     */
-    public void addMenuItem(String title, String tooltip, int mnemonic, String actionMethod) throws SecurityException, NoSuchMethodException
-    {
-        addMenuItem(title, tooltip, mnemonic, null, actionMethod);
-    }
-
-    /**
-     * Adds menu separator in specified menu location
-     * @param title - menu location
-     * @throws InvalidParameterException - when specified menu location not found
-     */
-    public void addMenuSeparator(String title)
-    {
-        MenuElement element = getMenuElement(title);
-        if(element == null)
-            throw new InvalidParameterException("Menu path not found: "+title);
-        if(element instanceof JMenu)
-            ((JMenu)element).addSeparator();
-        else if(element instanceof JPopupMenu)
-            ((JPopupMenu)element).addSeparator();
-        else
-            throw new InvalidParameterException("Invalid menu path: "+title);
-    }
-
-    private String getMenuPathName(String menuPath)
-    {
-        int pos = menuPath.lastIndexOf('/');
-        if(pos > 0)
-            return menuPath.substring(pos+1);
-        else
-            return menuPath;
-    }
-
-    /**
-     * Looks for menu element by menu path ignoring last path component
-     * @param menuPath - '/'-separated path to menu item (example: "Help/About...")
-     * @return found menu item or null if no such item found
-     */
-    private MenuElement getParentMenuElement(String menuPath)
-    {
-        int pos = menuPath.lastIndexOf('/');
-        if(pos > 0)
-            return getMenuElement(menuPath.substring(0, pos));
-        else
-            return menuBar;
-    }
-
-    /**
-     * Looks for menu element by menu path
-     * @param menuPath - '/'-separated path to menu item (example: "Help/About...")
-     * @return found menu item or null if no such item found
-     */
-    public MenuElement getMenuElement(String menuPath)
-    {
-        MenuElement element = menuBar;
-        for(String pathElement: menuPath.split("/"))
-        {
-            MenuElement newElement = null;
-            for(MenuElement subElement: element.getSubElements())
-            {
-                if((subElement instanceof JMenu && ((JMenu)subElement).getText().equals(pathElement))
-                        || (subElement instanceof JMenuItem && ((JMenuItem)subElement).getText().equals(pathElement)))
-                {
-                    if(subElement.getSubElements().length==1 && subElement.getSubElements()[0] instanceof JPopupMenu)
-                        newElement = subElement.getSubElements()[0];
-                    else
-                        newElement = subElement;
-                    break;
-                }
-            }
-            if(newElement == null) return null;
-            element = newElement;
+        JPanel panel = new JPanel();
+        if (2 * k * m > WIDTH) {
+            WIDTH = 2 * k * m;
         }
-        return element;
-    }
+        if (2 * k * n > HEIGHT) {
+            HEIGHT = 2 * k * n;
+        }
+        MyPanel myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT);
+        myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        panel.add(myPanel);
+        scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setWheelScrollingEnabled(true);
 
-    /**
-     * Creates toolbar button which will behave exactly like specified menuitem
-     * @param item - menuitem to create toolbar button from
-     * @return created toolbar button
-     */
-    public JButton createToolBarButton(JMenuItem item)
-    {
-        JButton button = new JButton(item.getIcon());
-        for(ActionListener listener: item.getActionListeners())
-            button.addActionListener(listener);
-        button.setToolTipText(item.getToolTipText());
-        return button;
-    }
+        frame.add(scrollPane);
 
-    /**
-     * Creates toolbar button which will behave exactly like specified menuitem
-     * @param menuPath - path to menu item to create toolbar button from
-     * @return created toolbar button
-     * @see Frame.getMenuItem
-     */
-    public JButton createToolBarButton(String menuPath)
-    {
-        JMenuItem item = (JMenuItem)getMenuElement(menuPath);
-        if(item == null)
-            throw new InvalidParameterException("Menu path not found: "+menuPath);
-        return createToolBarButton(item);
-    }
+        frame.pack();
+        frame.setLocationRelativeTo(null); //center the frame
+        frame.setVisible(true);
+        frame.setResizable(false);
 
-    /**
-     * Creates toolbar button which will behave exactly like specified menuitem and adds it to the toolbar
-     * @param menuPath - path to menu item to create toolbar button from
-     */
-    public void addToolBarButton(String menuPath)
-    {
-        toolBar.add(createToolBarButton(menuPath));
-    }
+        ActionListener lClear = l -> {
+            model.clearField();
+            bPlay.setSelected(false);
+            bStop.setSelected(true);
+            myPanel.clearField();
+        };
 
-    /**
-     * Adds separator to the toolbar
-     */
-    public void addToolBarSeparator()
-    {
-        toolBar.addSeparator();
+        bClear.addActionListener(lClear);
     }
 
 }
