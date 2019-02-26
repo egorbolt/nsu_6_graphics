@@ -22,6 +22,8 @@ public class MyPanel extends JPanel {
     private Graphics2D g1;
     private int WIDTH;
     private int HEIGHT;
+    private boolean xor;
+    private boolean replace;
 
     private HashMap<Point, Point> pixelsToCenter;
     private HashMap<Point, Point> centersToPixels;
@@ -40,6 +42,8 @@ public class MyPanel extends JPanel {
         this.deadColor = Color.WHITE;
         this.pixelsToCenter = new HashMap<>();
         this.centersToPixels = new HashMap<>();
+        this.xor = false;
+        this.replace = true;
 
         this.image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         this.g1 = image.createGraphics();
@@ -207,4 +211,19 @@ public class MyPanel extends JPanel {
         }
     }
 
+    public void setXOR(boolean s) {
+        this.xor = s;
+    }
+
+    public boolean getXOR() {
+        return this.xor;
+    }
+
+    public void setReplace(boolean s) {
+        this.replace = s;
+    }
+
+    public boolean getReplace() {
+        return this.replace;
+    }
 }
