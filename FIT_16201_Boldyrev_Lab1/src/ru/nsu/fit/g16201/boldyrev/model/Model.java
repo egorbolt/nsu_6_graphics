@@ -52,37 +52,94 @@ public class Model {
         int fstCount = 0;
         int sndCount = 0;
 
-        for (int i = 0; i <= n -1; i++) {
+        for (int i = 0; i <= n - 1; i++) {
             for (int j = 0; j <= m - 1; j++) {
+                if (i % 2 != 0 && j == m - 1) {
+                    continue;
+                }
+
                 fstCount = 0;
                 sndCount = 0;
 
-                if (i - 1 >= 0 && j - 1 >= 0 && fieldAlive[i - 1][j - 1]) {
-                    fstCount++;
+                if (i % 2 == 0) {
+                    if (i - 1 >= 0) {
+                        if (j - 1 >= 0 && fieldAlive[i - 1][j - 1]) {
+                            fstCount++;
+                        }
+                        if (j - 2 >= 0 && fieldAlive[i - 1][j - 2]) {
+                            sndCount++;
+                        }
+                        if (j + 1 <= m - 2 && fieldAlive[i - 1][j + 1]) {
+                            sndCount++;
+                        }
+                        if (fieldAlive[i - 1][j]) {
+                            fstCount++;
+                        }
+                    }
+
+                    if (i + 1 <= n - 1) {
+                        if (j - 1 >= 0 && fieldAlive[i + 1][j - 1]) {
+                            fstCount++;
+                        }
+                        if (j <= m - 2 && fieldAlive[i + 1][j]) {
+                            fstCount++;
+                        }
+                        if (j - 2 >= 0 && fieldAlive[i + 1][j - 2]) {
+                            sndCount++;
+                        }
+                        if (j + 1 <= m - 2 && fieldAlive[i + 1][j + 1]) {
+                            sndCount++;
+                        }
+                    }
+
+                    if (j - 1 >= 0 && fieldAlive[i][j - 1]) {
+                        fstCount++;
+                    }
+                    if (j + 1 <= m - 1 && fieldAlive[i][j + 1]) {
+                        fstCount++;
+                    }
+
                 }
-                if (i - 1 >= 0 && j >= 0 && fieldAlive[i - 1][j]) {
-                    fstCount++;
-                }
-                if (i >= 0 && j - 1 >= 0 && fieldAlive[i][j - 1]) {
-                    fstCount++;
-                }
-                if (i % 2 != 0 && j + 1 <= m - 2 && fieldAlive[i][j + 1]) {
-                    fstCount++;
-                }
-                if (i % 2 == 0 && j + 1 <= m - 1 && fieldAlive[i][j + 1]) {
-                    fstCount++;
-                }
-                if (i + 1 <= n - 1 && j - 1 >= 0 && fieldAlive[i + 1][j - 1]) {
-                    fstCount++;
-                }
-                if (j % 2 != 1 && i + 1 <= n - 1 && j <= m - 2 && fieldAlive[i + 1][j]) {
-                    fstCount++;
-                }
-                if (j % 2 == 0 && i + 1 <= n - 1 && j <= m - 1 && fieldAlive[i + 1][j]) {
-                    fstCount++;
+                else {
+                    if (i - 1 >= 0) {
+                        if (fieldAlive[i - 1][j]) {
+                            fstCount++;
+                        }
+                        if (j <= m - 2 && fieldAlive[i - 1][j + 1]) {
+                            fstCount++;
+                        }
+                        if (j - 1 >= 0 && fieldAlive[i - 1][j - 1]) {
+                            sndCount++;
+                        }
+                        if (j + 2 <= m - 1 && fieldAlive[i - 1][j + 2]) {
+                            sndCount++;
+                        }
+                    }
+
+                    if (i + 1 <= n - 1) {
+                        if (fieldAlive[i + 1][j]) {
+                            fstCount++;
+                        }
+                        if (j <= m - 1 && fieldAlive[i + 1][j + 1]) {
+                            fstCount++;
+                        }
+
+                        if (j - 1 >= 0 && fieldAlive[i + 1][j - 1]) {
+                            sndCount++;
+                        }
+                        if (j + 2 <= m - 1 && fieldAlive[i + 1][j + 2]) {
+                            sndCount++;
+                        }
+                    }
+
+                    if (j - 1 >= 0 && fieldAlive[i][j - 1]) {
+                        fstCount++;
+                    }
+                    if (j + 1 <= m - 2 && fieldAlive[i][j + 1]) {
+                        fstCount++;
+                    }
                 }
 
-                /*-------------------------------------*/
                 if (i - 2 >= 0 && fieldAlive[i - 2][j]) {
                     sndCount++;
                 }
@@ -90,44 +147,7 @@ public class Model {
                     sndCount++;
                 }
 
-//                if (j - 2 >= 0) {
-//                    if ((i - 1 >= 0 && fieldAlive[i - 1][j - 2]) || (i + 1 <= n - 1 && fieldAlive[i + 1][j - 2])) {
-//                        sndCount++;
-//                    }
-//
-//                }
-                if (i - 1 >= 0 && j - 2 >= 0 && fieldAlive[i - 1][j - 2]) {
-                    sndCount++;
-                }
-                if (i + 1 <= n - 1 && j - 2 >= 0 && fieldAlive[i + 1][j - 2]) {
-                    sndCount++;
-                }
-
-//                if (i % 2 == 0 && j + 1 <= m - 2) {
-//                    if ((i - 1 >= 0 && fieldAlive[i - 1][j + 1]) || (i + 1 <= n - 1 && fieldAlive[i + 1][j + 1])) {
-//                        sndCount++;
-//                    }
-//                }
-                if (i % 2 == 0 && i - 1 >= 0 && j + 1 <= m - 2 && fieldAlive[i - 1][j + 1]) {
-                    sndCount++;
-                }
-                if (i % 2 == 0 && i + 1 <= n - 1 && j + 1 <= m - 2 && fieldAlive[i + 1][j + 1]) {
-                    sndCount++;
-                }
-
-//                if (i % 2 != 0 && j + 1 <= m - 1) {
-//                    if ((i - 1 >= 0 && fieldAlive[i - 1][j + 1]) || (i + 1 <= n - 1 && fieldAlive[i + 1][j + 1])) {
-//                        sndCount++;
-//                    }
-//                }
-                if (i % 2 != 0 && i - 1 >= 0 && j + 1 <= m - 1 && fieldAlive[i - 1][j + 1]) {
-                    sndCount++;
-                }
-                if (i % 2 != 0 && i + 1 <= n - 1 && j + 1 <= m - 1 && fieldAlive[i + 1][j + 1]) {
-                    sndCount++;
-                }
-
-                fieldImpact[i][j] = FST_IMPACT * fstCount * SND_IMPACT * sndCount;
+                fieldImpact[i][j] = FST_IMPACT * fstCount + SND_IMPACT * sndCount;
             }
         }
     }
@@ -135,6 +155,8 @@ public class Model {
     public void checkCellsStatus() {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
+
+                fieldAlivePrevious[i][j] = fieldAlive[i][j];
                 if (!fieldAlivePrevious[i][j]) {
                     if (fieldImpact[i][j] >= BIRTH_BEGIN && fieldImpact[i][j] <= BIRTH_END) {
                         fieldAlive[i][j] = true;
@@ -145,7 +167,6 @@ public class Model {
                         fieldAlive[i][j] = false;
                 }
 
-                fieldAlivePrevious[i][j] = fieldAlive[i][j];
             }
         }
 
@@ -182,11 +203,13 @@ public class Model {
     public void clearField() {
         this.fieldImpact = new double[n][m];
         this.fieldAlive = new boolean[n][m];
+        this.fieldAlivePrevious = new boolean[n][m];
     }
 
     public void resetField(int n, int m) {
         this.fieldAlive = new boolean[n][m];
         this.fieldImpact = new double[n][m];
+        this.fieldAlivePrevious = new boolean[n][m];
     }
 
     public ArrayList<Integer[]> getAliveCells() {
@@ -249,5 +272,11 @@ public class Model {
     public boolean[][] getFieldAlive() {
         return this.fieldAlive;
     }
+
+    public void makeCellAlivePrevious(int x, int y) {
+        fieldAlivePrevious[x][y] = true;
+    }
+
+    public void makeCellDeadPrevious(int x, int y) { fieldAlivePrevious[x][y] = false; }
 
 }

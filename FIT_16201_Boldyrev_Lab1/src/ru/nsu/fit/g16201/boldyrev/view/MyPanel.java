@@ -78,18 +78,20 @@ public class MyPanel extends JPanel {
                         if (replace && !xor) {
 
                             DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
-
-
                             model.makeCellAlive(p2.x, p2.y);
+                            model.nextImpact();
+                            int a = 0;
                         }
                         else if (xor && !replace) {
                             if (image.getRGB(x, y) == liveColor.getRGB()) {
                                 DrawTools.spanColoring(image, liveColor.getRGB(), deadColor.getRGB(), x, y);
                                 model.makeCellDead(p2.x, p2.y);
+                                model.nextImpact();
                             }
                             else if (image.getRGB(x, y) == deadColor.getRGB()) {
                                 DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
                                 model.makeCellAlive(p2.x, p2.y);
+                                model.nextImpact();
                             }
                         }
                     }
@@ -137,17 +139,20 @@ public class MyPanel extends JPanel {
                         if (replace && !xor) {
                             DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
                             model.makeCellAlive(p2.x, p2.y);
+                            model.nextImpact();
                         }
                         else if (xor && !replace) {
                             int co = image.getRGB(x, y);
                             if (co == liveColor.getRGB() && wasChanged[p2.x][p2.y] != 2) {
                                 DrawTools.spanColoring(image, liveColor.getRGB(), deadColor.getRGB(), x, y);
                                 model.makeCellDead(p2.x, p2.y);
+                                model.nextImpact();
                                 wasChanged[p2.x][p2.y] = 1;
                             }
                             else if (co == deadColor.getRGB() && wasChanged[p2.x][p2.y] != 1) {
                                 DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
                                 model.makeCellAlive(p2.x, p2.y);
+                                model.nextImpact();
                                 wasChanged[p2.x][p2.y] = 2;
                             }
                         }

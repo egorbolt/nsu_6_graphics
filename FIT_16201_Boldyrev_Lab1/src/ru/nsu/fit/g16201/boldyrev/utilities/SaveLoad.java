@@ -48,13 +48,13 @@ public class SaveLoad {
 
         try (Writer writer = new BufferedWriter(new FileWriter(file))){
             file.createNewFile();
-            writer.write(n + " " + m + "\n");
+            writer.write(m + " " + n + "\n");
             writer.write(t + "\n");
             writer.write(k + " " + "\n");
             writer.write(aliveCells.size() + "\n");
             for (int i = 0; i < aliveCells.size(); i++) {
                 Integer[] cell = aliveCells.get(i);
-                writer.write(cell[0] + " " + cell[1] + "\n");
+                writer.write(cell[1] + " " + cell[0] + "\n");
             }
         } catch (IOException eIO) {
             eIO.printStackTrace();
@@ -96,8 +96,8 @@ public class SaveLoad {
                 }
             }
 
-            n = params[0];
-            m = params[1];
+            m = params[0];
+            n = params[1];
             t = params[2];
             k = params[3];
             cellAmount = params[4];
@@ -116,7 +116,7 @@ public class SaveLoad {
                 line = line.trim();
                 String[] sp = line.split(" ");
 
-                model.makeCellAlive(Integer.parseInt(sp[0]), Integer.parseInt(sp[1]));
+                model.makeCellAlive(Integer.parseInt(sp[1]), Integer.parseInt(sp[0]));
                 line = reader.readLine();
             }
         } catch (IOException eIO) {
