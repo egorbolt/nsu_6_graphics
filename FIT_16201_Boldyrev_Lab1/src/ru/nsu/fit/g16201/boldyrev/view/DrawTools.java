@@ -19,9 +19,12 @@ public class DrawTools {
         int x;
         int y;
 
-
-        dx = Math.abs(dx);
-        dy = Math.abs(dy);
+        if (dx < 0) {
+            dx = -dx;
+        }
+        if (dy < 0) {
+            dy = -dy;
+        }
 
         if (dx > dy) {
             pdx = directionX;
@@ -57,15 +60,16 @@ public class DrawTools {
     }
 
     public static Point[] drawHexagon(Graphics2D g, int x0, int y0, int k, int thickness) {
-        int x1 = x0 + (int)(k * Math.sqrt(3) / 2);
+        int semichord = (int)(k * Math.sqrt(3) / 2);
+        int x1 = x0 + semichord;
         int y1 = y0 - k / 2;
-        int x2 = x1 + (int)(k * Math.sqrt(3) / 2);
+        int x2 = x1 + semichord;
         int y2 = y0;
         int x3 = x2;
         int y3 = y2 + k;
-        int x4 = x3 - (int)(k * Math.sqrt(3) / 2);
+        int x4 = x3 - semichord;
         int y4 = y3 + k / 2;
-        int x5 = x4 - (int)(k * Math.sqrt(3) / 2);
+        int x5 = x4 - semichord;
         int y5 = y3;
 
         if (thickness == 1) {
@@ -175,33 +179,13 @@ public class DrawTools {
         }
     }
 
-//    public static Double[] getCellByCoord(int x, int y, int k) {
-//        int resX = 0;
-//        int resY = 0;
-//
-//        double q = (Math.sqrt(3) / 3 * x - 1.0 / 3 * y) / k;
-//        double r =  (2.0 / 3 * y) / k;
-//
-////        if (r - 1 < 1) {
-////            resY = (int) Math.floor()
-////        }
-//
-////        int resX = (int) Math.round(q);
-////        int resY = (int) Math.round(r);
-//        Double[] d = new Double[2];
-//        d[0] = q + (int) r / 2;
-//        d[1] = r;
-//        return d;
-////        return new Point((int) q, (int) r);
-//    }
-
     public static Point getCellbyCoord(BufferedImage image, int borderColor, int x, int y) {
         int x1;
         int x2;
         int y1;
         int y2;
-        int xres = 0;
-        int yres = 0;
+        int xres;
+        int yres;
 
         x1 = x;
         while (image.getRGB(x1, y) != borderColor) {

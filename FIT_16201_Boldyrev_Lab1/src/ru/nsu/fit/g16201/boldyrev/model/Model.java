@@ -217,16 +217,20 @@ public class Model {
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
+                if (i % 2 != 0 && j == m - 1) {
+                    continue;
+                }
                 if (fieldAlive[i][j]) {
                     Integer[] cell = new Integer[2];
                     cell[0] = i;
                     cell[1] = j;
-                    if (!(i % 2 != 0 && j == m - 2)) {
-                        list.add(cell);
-                    }
-                    else {
-                        j++;
-                    }
+//                    if (!(i % 2 != 0 && j == m - 2)) {
+//                        list.add(cell);
+//                    }
+//                    else {
+//                        j++;
+//                    }
+                    list.add(cell);
                 }
             }
         }
@@ -239,16 +243,20 @@ public class Model {
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
+                if (i % 2 != 0 && j == m - 1) {
+                    continue;
+                }
                 if (!fieldAlive[i][j]) {
                     Integer[] cell = new Integer[2];
                     cell[0] = i;
                     cell[1] = j;
-                    if (!(i % 2 != 0 && j == m - 2)) {
-                        list.add(cell);
-                    }
-                    else {
-                        j++;
-                    }
+//                    if (!(i % 2 != 0 && j == m - 2)) {
+//                        list.add(cell);
+//                    }
+//                    else {
+//                        j++;
+//                    }
+                    list.add(cell);
                 }
             }
         }
