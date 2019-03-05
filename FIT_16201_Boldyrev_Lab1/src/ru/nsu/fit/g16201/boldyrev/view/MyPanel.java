@@ -86,22 +86,27 @@ public class MyPanel extends JPanel {
                         }
                         Point p2 = pixelsToCenter.get(p);
                         if (replace && !xor) {
-
                             DrawTools.spanColoring(image, impactsColor.getRGB(), deadColor.getRGB(), liveColor.getRGB(), x, y);
                             model.makeCellAlive(p2.x, p2.y);
+                            drawImpacts(false);
                             model.nextImpact();
+                            drawImpacts(impacts);
                             int a = 0;
                         }
                         else if (xor && !replace) {
                             if (image.getRGB(x, y) == liveColor.getRGB()) {
                                 DrawTools.spanColoring(image, impactsColor.getRGB(), liveColor.getRGB(), deadColor.getRGB(), x, y);
                                 model.makeCellDead(p2.x, p2.y);
+                                drawImpacts(false);
                                 model.nextImpact();
+                                drawImpacts(impacts);
                             }
                             else if (image.getRGB(x, y) == deadColor.getRGB()) {
                                 DrawTools.spanColoring(image, impactsColor.getRGB(), deadColor.getRGB(), liveColor.getRGB(), x, y);
                                 model.makeCellAlive(p2.x, p2.y);
+                                drawImpacts(false);
                                 model.nextImpact();
+                                drawImpacts(impacts);
                             }
                         }
                     }
@@ -132,7 +137,6 @@ public class MyPanel extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 if (isField(image, borderColor, e.getX(), e.getY())) {
                     if (image.getRGB(e.getX(), e.getY()) != borderColor.getRGB()) {
-
                         int x = e.getX();
                         int y = e.getY();
                         Point p = DrawTools.getCellbyCoord(image, borderColor.getRGB(), x, y);
@@ -149,20 +153,26 @@ public class MyPanel extends JPanel {
                         if (replace && !xor) {
                             DrawTools.spanColoring(image, impactsColor.getRGB(), deadColor.getRGB(), liveColor.getRGB(), x, y);
                             model.makeCellAlive(p2.x, p2.y);
+                            drawImpacts(false);
                             model.nextImpact();
+                            drawImpacts(impacts);
                         }
                         else if (xor && !replace) {
                             int co = image.getRGB(x, y);
                             if (co == liveColor.getRGB() && wasChanged[p2.x][p2.y] != 2) {
                                 DrawTools.spanColoring(image, impactsColor.getRGB(), liveColor.getRGB(), deadColor.getRGB(), x, y);
                                 model.makeCellDead(p2.x, p2.y);
+                                drawImpacts(false);
                                 model.nextImpact();
+                                drawImpacts(impacts);
                                 wasChanged[p2.x][p2.y] = 1;
                             }
                             else if (co == deadColor.getRGB() && wasChanged[p2.x][p2.y] != 1) {
                                 DrawTools.spanColoring(image, impactsColor.getRGB(), deadColor.getRGB(), liveColor.getRGB(), x, y);
                                 model.makeCellAlive(p2.x, p2.y);
+                                drawImpacts(false);
                                 model.nextImpact();
+                                drawImpacts(impacts);
                                 wasChanged[p2.x][p2.y] = 2;
                             }
                         }

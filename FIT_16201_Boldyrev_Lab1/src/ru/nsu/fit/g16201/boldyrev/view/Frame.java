@@ -24,10 +24,6 @@ public class Frame extends JFrame {
     private double buffer = 0;
     private boolean isUpdating;
 
-    private Color impactsColor = Color.DARK_GRAY.darker();
-    private Color liveColor = Color.GREEN;
-    private Color deadColor = Color.WHITE;
-
     private JMenuBar menuBar;
     private JToolBar toolBar;
     private JScrollPane scrollPane;
@@ -48,21 +44,17 @@ public class Frame extends JFrame {
 
         n = 6;
         m = 6;
-        k = 35;
+        k = 9;
         t = 1;
         WIDTH = 800;
         HEIGHT = 500;
         model = new Model(n, m);
 
-//        frame = new JFrame();
         setPreferredSize(new Dimension(800, 600));
         setMinimumSize(new Dimension(800, 600));
         setLayout(new BorderLayout());
         setTitle("Life");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-//        menuBar = createMenuBar();
-//        toolBar = createToolBar();
 
         /*creating toolBar*/
         toolBar = new JToolBar();
@@ -357,10 +349,21 @@ public class Frame extends JFrame {
         };
 
         ActionListener lImpacts = l -> {
-            impacts = !impacts;
-            myPanel.setImpacts(impacts);
-            myPanel.drawImpacts(impacts);
-            jmImpacts.setSelected(impacts);
+            if (k >= 11) {
+                impacts = !impacts;
+                jmImpacts.setSelected(impacts);
+                bImpacts.setSelected(impacts);
+                myPanel.setImpacts(impacts);
+                myPanel.drawImpacts(impacts);
+
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Size of hexagon is too small to show impacts",
+                        "Warning: small hexagon", JOptionPane.WARNING_MESSAGE);
+                jmImpacts.setSelected(false);
+                bImpacts.setSelected(false);
+                myPanel.setImpacts(false);
+            }
         };
 
         ActionListener lPlay = l -> {
