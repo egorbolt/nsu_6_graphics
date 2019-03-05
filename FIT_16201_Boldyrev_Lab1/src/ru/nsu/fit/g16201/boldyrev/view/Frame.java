@@ -22,6 +22,7 @@ public class Frame extends JFrame {
     private Integer k;
     private Integer t;
     private double buffer = 0;
+    private boolean isUpdating;
 
     private Color liveColor;
     private Color deadColor;
@@ -44,6 +45,7 @@ public class Frame extends JFrame {
 
     public Frame() {
         SaveLoad saveload = new SaveLoad();
+        isUpdating = false;
 
         n = 6;
         m = 6;
@@ -220,46 +222,86 @@ public class Frame extends JFrame {
             model.clearField();
             bPlay.setSelected(false);
             bStop.setSelected(true);
+            myPanel.stopGame();
             myPanel.clearField();
         };
 
         ActionListener lSave = l -> {
             bPlay.setSelected(false);
             bStop.setSelected(true);
+            myPanel.stopGame();
             saveload.save(this, model);
+            myPanel.playGame();
         };
 
         ActionListener lOpen = l -> {
             bPlay.setSelected(false);
             bStop.setSelected(true);
-            saveload.load(this, model);
-            n = model.getN();
-            m = model.getM();
-            if (3 * k * (m / 2 + 3) > 800) {
-                WIDTH = 3 * k * (m / 2 + 3);
+            try {
+                saveload.load(this, model);
+                myPanel.stopGame();
+                n = model.getN();
+                m = model.getM();
+                if (3 * k * (m / 2 + 3) > 800) {
+                    WIDTH = 3 * k * (m / 2 + 3);
+                }
+                else {
+                    WIDTH = 800;
+                }
+                if (3 * k * (n / 2) > 500) {
+                    HEIGHT = 3 * k * (n / 2 + 1);
+                }
+                else {
+                    HEIGHT = 500;
+                }
+
+                panel.remove(myPanel);
+                myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
+                myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+                panel.add(myPanel);
+                myPanel.colorAliveCells();
+                xorMode = false;
+                bXor.setSelected(false);
+                bReplace.setSelected(true);
+                pack();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this,
+                        "Wrong .txt file! Check format!",
+                        "Load error",
+                        JOptionPane.ERROR_MESSAGE);
             }
-            else {
-                WIDTH = 800;
-            }
-            if (3 * k * (n / 2) > 500) {
-                HEIGHT = 3 * k * (n / 2 + 1);
-            }
-            else {
-                HEIGHT = 500;
-            }
-            panel.remove(myPanel);
-            myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
-            myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-            panel.add(myPanel);
-            myPanel.colorAliveCells(model);
-            xorMode = false;
-            bXor.setSelected(false);
-            bReplace.setSelected(true);
-            pack();
+
         };
 
         ActionListener lOptions = l -> {
             optionsDialog();
+            model.setParameters(LIVE_BEGIN, LIVE_END, BIRTH_BEGIN, BIRTH_END, FST_IMPACT, SND_IMPACT);
+            if (isUpdating) {
+                isUpdating = false;
+                int result = JOptionPane.showConfirmDialog(this,
+                        "Field parameters have been changed.\n" +
+                                "Field will be set according to new parameters.\n" +
+                                "Do you want to save current field?",
+                        "New",
+                        JOptionPane.YES_NO_CANCEL_OPTION);
+                if (result != JOptionPane.CANCEL_OPTION) {
+                    if (result == JOptionPane.YES_OPTION) {
+                        boolean isSaved = saveload.save(this, model);
+                    }
+                    myPanel.stopGame();
+                    panel.remove(myPanel);
+                    model.resetField(n, m);
+                    myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
+                    myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+                    panel.add(myPanel);
+                    xorMode = false;
+                    bXor.setSelected(false);
+                    bReplace.setSelected(true);
+                    bPlay.setSelected(false);
+                    bStop.setSelected(true);
+                    pack();
+                }
+            }
         };
 
         ActionListener lNew = l -> {
@@ -270,15 +312,17 @@ public class Frame extends JFrame {
             if (result == JOptionPane.YES_OPTION) {
                 saveload.save(this, model);
             }
+            myPanel.stopGame();
             panel.remove(myPanel);
+            model.resetField(n, m);
             myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
             myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
             panel.add(myPanel);
-            myPanel.colorAliveCells(model);
             xorMode = false;
             bXor.setSelected(false);
             bReplace.setSelected(true);
             pack();
+            int a = 0;
         };
 
         ActionListener lAbout = l -> {
@@ -304,9 +348,29 @@ public class Frame extends JFrame {
         };
 
         ActionListener lNext = l -> {
-            bStop.setSelected(false);
+            if (!bPlay.isSelected()) {
+                bStop.setSelected(true);
+                bPlay.setSelected(false);
+                myPanel.nextStep();
+            }
+        };
+
+        ActionListener lImpacts = l -> {
+            impacts = !impacts;
+            myPanel.setImpacts(impacts);
+
+        };
+
+        ActionListener lPlay = l -> {
             bPlay.setSelected(true);
-            myPanel.nextStep();
+            bStop.setSelected(false);
+            myPanel.playGame();
+        };
+
+        ActionListener lStop = l -> {
+            bPlay.setSelected(false);
+            bStop.setSelected(true);
+            myPanel.stopGame();
         };
 
         bClear.addActionListener(lClear);
@@ -318,6 +382,9 @@ public class Frame extends JFrame {
         bXor.addActionListener(lXor);
         bReplace.addActionListener(lReplace);
         bNext.addActionListener(lNext);
+        bPlay.addActionListener(lPlay);
+        bStop.addActionListener(lStop);
+        bImpacts.addActionListener(lImpacts);
     }
 
     public int getK() {
@@ -501,34 +568,55 @@ public class Frame extends JFrame {
         dialog.add(mainPanel);
 
         okButton.addActionListener(e-> {
-            if (!mField.getText().isEmpty())
-                m = Integer.parseInt(mField.getText());
-
-            if (!nField.getText().isEmpty())
-                n = Integer.parseInt(nField.getText());
-
+            if (!mField.getText().isEmpty()) {
+                int newM = Integer.parseInt(mField.getText());
+                if (newM != m) {
+                    m = newM;
+                    isUpdating = true;
+                }
+            }
+            if (!nField.getText().isEmpty()) {
+                int newN = Integer.parseInt(nField.getText());
+                if (newN != n) {
+                    n = newN;
+                    isUpdating = true;
+                }
+            }
             if (!kField.getText().isEmpty()) {
-                k = Integer.parseInt(kField.getText());
-                if (k < 3)
-                    k = 3;
+                int newK = Integer.parseInt(kField.getText());
+                if (newK != k) {
+                    k = newK;
+                    if (k < 3) {
+                        k = 3;
+                    }
+                    isUpdating = true;
+                }
             }
 
-            if (!tField.getText().isEmpty())
-                t = Integer.parseInt(tField.getText());
+            if (!tField.getText().isEmpty()) {
+                int newT = Integer.parseInt(tField.getText());
+                if (newT != t) {
+                    t = newT;
+                    isUpdating = true;
+                }
+            }
 
-            if (!jFST.getText().isEmpty())
+            if (!jFST.getText().isEmpty()) {
                 try {
                     FST_IMPACT = Double.parseDouble(jFST.getText().replace(",", "."));
                 } catch (NumberFormatException err) {
                     err.printStackTrace();
                 }
 
-            if (!jSND.getText().isEmpty())
+            }
+
+            if (!jSND.getText().isEmpty()) {
                 try {
                     SND_IMPACT = Double.parseDouble(jSND.getText().replace(",", "."));
                 } catch (NumberFormatException err) {
                     err.printStackTrace();
                 }
+            }
 
             if (!jLB.getText().isEmpty()) {
                 try {
@@ -574,7 +662,9 @@ public class Frame extends JFrame {
                                 "Incorrect input", JOptionPane.INFORMATION_MESSAGE);
                     }
 
-                } catch (NumberFormatException n) {}
+                } catch (NumberFormatException n) {
+                    n.printStackTrace();
+                }
             }
 
             if (!jBE.getText().isEmpty()) {
@@ -588,12 +678,10 @@ public class Frame extends JFrame {
                                 "BIRTH_END should be BIRTH_BEGIN <= BIRTH_END <= LIVE_END",
                                 "Incorrect input", JOptionPane.INFORMATION_MESSAGE);
                     }
-                } catch (NumberFormatException n) {}
+                } catch (NumberFormatException n) {
+                    n.printStackTrace();
+                }
             }
-//            if (tag == 4) {
-//                needUpdating = true;
-//                dialog.dispose();
-//            }
 
             dialog.dispose();
         });

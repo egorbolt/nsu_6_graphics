@@ -207,6 +207,8 @@ public class Model {
     }
 
     public void resetField(int n, int m) {
+        this.setN(n);
+        this.setM(m);
         this.fieldAlive = new boolean[n][m];
         this.fieldImpact = new double[n][m];
         this.fieldAlivePrevious = new boolean[n][m];
@@ -224,12 +226,6 @@ public class Model {
                     Integer[] cell = new Integer[2];
                     cell[0] = i;
                     cell[1] = j;
-//                    if (!(i % 2 != 0 && j == m - 2)) {
-//                        list.add(cell);
-//                    }
-//                    else {
-//                        j++;
-//                    }
                     list.add(cell);
                 }
             }
@@ -250,12 +246,6 @@ public class Model {
                     Integer[] cell = new Integer[2];
                     cell[0] = i;
                     cell[1] = j;
-//                    if (!(i % 2 != 0 && j == m - 2)) {
-//                        list.add(cell);
-//                    }
-//                    else {
-//                        j++;
-//                    }
                     list.add(cell);
                 }
             }
@@ -279,6 +269,10 @@ public class Model {
 
     public boolean[][] getFieldAlive() {
         return this.fieldAlive;
+    }
+
+    public double[][] getFieldImpact() {
+        return this.fieldImpact;
     }
 
     public void makeCellAlivePrevious(int x, int y) {

@@ -63,7 +63,7 @@ public class SaveLoad {
         return true;
     }
 
-    public void load(Frame frame, Model model) {
+    public void load(Frame frame, Model model) throws Exception {
         File file = new File("file.txt");
         String line;
         int[] params = new int[5];
@@ -115,8 +115,13 @@ public class SaveLoad {
                 }
                 line = line.trim();
                 String[] sp = line.split(" ");
+                int a = Integer.parseInt(sp[1]);
+                int b = Integer.parseInt(sp[0]);
+                if (a >= n || b >= m) {
+                    throw new Exception();
+                }
 
-                model.makeCellAlive(Integer.parseInt(sp[1]), Integer.parseInt(sp[0]));
+                model.makeCellAlive(a, b);
                 line = reader.readLine();
             }
         } catch (IOException eIO) {

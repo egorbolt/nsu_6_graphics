@@ -10,6 +10,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TimerTask;
+import java.util.Timer;
 
 public class MyPanel extends JPanel {
     private int n;
@@ -19,13 +21,17 @@ public class MyPanel extends JPanel {
     private Color borderColor;
     private Color liveColor;
     private Color deadColor;
+    private Color impactsColor;
     private BufferedImage image;
     private Graphics2D g1;
     private int WIDTH;
     private int HEIGHT;
     private boolean xor;
     private boolean replace;
+    private boolean impacts;
     private short[][] wasChanged;
+    private Timer timer;
+    private GameProcess gameProcess;
 
     private HashMap<Point, Point> pixelsToCenter;
     private HashMap<Point, Point> centersToPixels;
@@ -42,12 +48,15 @@ public class MyPanel extends JPanel {
         this.borderColor = Color.BLACK;
         this.liveColor = Color.GREEN;
         this.deadColor = Color.WHITE;
+        this.impactsColor = Color.DARK_GRAY.darker();
         this.pixelsToCenter = new HashMap<>();
         this.centersToPixels = new HashMap<>();
         this.xor = false;
         this.replace = true;
+        this.impacts = false;
         this.wasChanged = new short[n][m];
-
+        this.timer = new Timer();
+        this.gameProcess = new GameProcess(this);
 
         this.image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         this.g1 = image.createGraphics();
@@ -236,7 +245,7 @@ public class MyPanel extends JPanel {
         repaint();
     }
 
-    public void colorAliveCells(Model model) {
+    public void colorAliveCells() {
         boolean[][] fieldAlive = model.getFieldAlive();
 
         for (int i = 0; i < n; i++) {
@@ -269,6 +278,10 @@ public class MyPanel extends JPanel {
         return this.replace;
     }
 
+    public void setImpacts(boolean impacts) {
+        this.impacts = impacts;
+    }
+
     public void nextStep() {
         model.nextImpact();
         model.checkCellsStatus();
@@ -292,6 +305,64 @@ public class MyPanel extends JPanel {
             }
         }
 
+        if (impacts) {
+            drawImpacts(Color.DARK_GRAY.darker());
+        }
+
         repaint();
+    }
+
+    public void playGame() {
+        timer.schedule(gameProcess, 0, 500);
+    }
+
+    public void stopGame() {
+        timer.cancel();
+        timer.purge();
+        timer = new Timer();
+        gameProcess = new GameProcess(this);
+    }
+
+    private void drawImpacts(Color color) {
+        double [][] fieldImpact = model.getFieldImpact();
+        String string = null;
+        int x = 0;
+        int y = 0;
+        int i = 0;
+        int j = 0;
+
+        Font font = new Font("Plain", Font.PLAIN, k / 2);
+        g1.setFont(font);
+        g1.setColor(color);
+
+        for (i = 0; i < n; i++) {
+            for (j = 0; j < m; j++) {
+                if (i % 2 != 0 && j == m - 1) {
+                    continue;
+                }
+                Point a = new Point(i, j);
+                x = (int) centersToPixels.get(a).getX();
+                y = (int) centersToPixels.get(a).getY();
+                if (fieldImpact[i][j] % 1 == 0.00) {
+                    string = String.format("%.0f", fieldImpact[i][j]).replace(",", ".");
+                } else {
+                    string = String.format("%.1f", fieldImpact[i][j]).replace(",", ".");
+                }
+                g1.drawString(string, x, y);
+            }
+        }
+    }
+
+    private class GameProcess extends TimerTask {
+        MyPanel myPanel;
+
+        GameProcess(MyPanel myPanel) {
+            this.myPanel = myPanel;
+        }
+
+        @Override
+        public void run() {
+            myPanel.nextStep();
+        }
     }
 }
