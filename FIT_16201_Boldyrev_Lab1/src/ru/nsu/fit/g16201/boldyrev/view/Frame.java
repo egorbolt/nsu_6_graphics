@@ -27,7 +27,6 @@ public class Frame extends JFrame {
     private JMenuBar menuBar;
     private JToolBar toolBar;
     private JScrollPane scrollPane;
-    private JFileChooser fileChooser;
 
     private boolean xorMode = false;
     private boolean impacts = false;
@@ -44,7 +43,7 @@ public class Frame extends JFrame {
 
         n = 6;
         m = 6;
-        k = 9;
+        k = 20;
         t = 1;
         WIDTH = 800;
         HEIGHT = 500;
@@ -196,6 +195,7 @@ public class Frame extends JFrame {
         myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
         myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         panel.add(myPanel);
+        saveload.getStateAtLoad(model, this);
         scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setWheelScrollingEnabled(true);
@@ -203,7 +203,7 @@ public class Frame extends JFrame {
         add(scrollPane);
 
         pack();
-        setLocationRelativeTo(null); //center the frame
+        setLocationRelativeTo(null);
         setVisible(true);
         setResizable(false);
 
@@ -219,6 +219,23 @@ public class Frame extends JFrame {
             bPlay.setSelected(false);
             bStop.setSelected(true);
             myPanel.stopGame();
+//            if (saveload.shouldSave(model, this)) {
+//                int result = JOptionPane.showConfirmDialog(this,
+//                        "Field have been changed.\n" +
+//                                "Do you want to save current field?",
+//                        "Save?",
+//                        JOptionPane.YES_NO_CANCEL_OPTION);
+//                if (result == JOptionPane.YES_OPTION) {
+//
+//                }
+//            }
+//            else {
+//                JOptionPane.showMessageDialog(this,
+//                        "Field hasn't changed at all,\n" +
+//                                "it's not necessary to save.",
+//                        "No need to save",
+//                        JOptionPane.INFORMATION_MESSAGE);
+//            }
             saveload.save(this, model);
             myPanel.playGame();
         };
@@ -226,33 +243,81 @@ public class Frame extends JFrame {
         ActionListener lOpen = l -> {
             bPlay.setSelected(false);
             bStop.setSelected(true);
+            bImpacts.setSelected(false);
+            impacts = false;
+            myPanel.stopGame();
             try {
-                saveload.load(this, model);
-                myPanel.stopGame();
-                n = model.getN();
-                m = model.getM();
-                if (3 * k * (m / 2 + 3) > 800) {
-                    WIDTH = 3 * k * (m / 2 + 3);
-                }
-                else {
-                    WIDTH = 800;
-                }
-                if (3 * k * (n / 2) > 500) {
-                    HEIGHT = 3 * k * (n / 2 + 1);
-                }
-                else {
-                    HEIGHT = 500;
-                }
+                if (saveload.shouldSave(model, this)) {
+                    int result = JOptionPane.showConfirmDialog(this,
+                            "Field have been changed.\n" +
+                                    "Do you want to save current field?",
+                            "Save?",
+                            JOptionPane.YES_NO_CANCEL_OPTION);
+                    if (result != JOptionPane.CANCEL_OPTION) {
+                        if (result == JOptionPane.YES_OPTION) {
+                            saveload.save(this, model);
+                        }
+                        else if (result == JOptionPane.NO_OPTION) {
+                            saveload.load(this, model);
+                            myPanel.stopGame();
+                            n = model.getN();
+                            m = model.getM();
+                            if (3 * k * (m / 2 + 3) > 800) {
+                                WIDTH = 3 * k * (m / 2 + 3);
+                            } else {
+                                WIDTH = 800;
+                            }
+                            if (3 * k * (n / 2) > 500) {
+                                HEIGHT = 3 * k * (n / 2 + 1);
+                            } else {
+                                HEIGHT = 500;
+                            }
 
-                panel.remove(myPanel);
-                myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
-                myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-                panel.add(myPanel);
-                myPanel.colorAliveCells();
-                xorMode = false;
-                bXor.setSelected(false);
-                bReplace.setSelected(true);
-                pack();
+                            panel.remove(myPanel);
+                            myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
+                            myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+                            panel.add(myPanel);
+                            saveload.getStateAtLoad(model, this);
+                            myPanel.colorAliveCells();
+                            myPanel.setImpacts(false);
+                            xorMode = false;
+                            bXor.setSelected(false);
+                            bReplace.setSelected(true);
+                            pack();
+                        }
+                    }
+                    else {
+                        myPanel.playGame();
+                    }
+                }
+                else {
+                    saveload.load(this, model);
+                    myPanel.stopGame();
+                    n = model.getN();
+                    m = model.getM();
+                    if (3 * k * (m / 2 + 3) > 800) {
+                        WIDTH = 3 * k * (m / 2 + 3);
+                    } else {
+                        WIDTH = 800;
+                    }
+                    if (3 * k * (n / 2) > 500) {
+                        HEIGHT = 3 * k * (n / 2 + 1);
+                    } else {
+                        HEIGHT = 500;
+                    }
+
+                    panel.remove(myPanel);
+                    myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
+                    myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+                    panel.add(myPanel);
+                    saveload.getStateAtLoad(model, this);
+                    myPanel.colorAliveCells();
+                    myPanel.setImpacts(false);
+                    xorMode = false;
+                    bXor.setSelected(false);
+                    bReplace.setSelected(true);
+                    pack();
+                }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this,
                         "Wrong .txt file! Check format!",
@@ -418,14 +483,6 @@ public class Frame extends JFrame {
 
     public void setT(int t) {
         this.t = t;
-    }
-
-    public void setN(int n) {
-        this.n = n;
-    }
-
-    public void setM(int m) {
-        this.m = m;
     }
 
     public void optionsDialog() {

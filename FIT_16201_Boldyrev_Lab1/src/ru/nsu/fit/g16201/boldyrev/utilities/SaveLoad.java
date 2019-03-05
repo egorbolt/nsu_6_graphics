@@ -12,6 +12,12 @@ public class SaveLoad {
     private static final String DIR_WHERE_SAVE = "FIT_16201_Boldyrev_Life_Data/";
     private JFileChooser fileChooser;
 
+    private int nStart;
+    private int mStart;
+    private int tStart;
+    private int kStart;
+    private boolean[][] fieldAliveStart;
+
     public SaveLoad() {
         this.fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(DIR_WHERE_SAVE));
@@ -125,5 +131,43 @@ public class SaveLoad {
         } catch (IOException eIO) {
             eIO.printStackTrace();
         }
+    }
+
+    public void getStateAtLoad(Model model, Frame frame) {
+        nStart = model.getN();
+        mStart = model.getM();
+        tStart = frame.getT();
+        kStart = frame.getK();
+        fieldAliveStart = cloneArray(model.getFieldAlive());
+        int a = 0;
+    }
+
+    public boolean shouldSave(Model model, Frame frame) {
+        boolean [][] fieldAlive = model.getFieldAlive();
+        if (model.getN() != nStart || model.getM() != mStart || frame.getT() != tStart || frame.getK() != kStart) {
+            return true;
+        }
+
+        for (int i = 0; i < nStart; i++) {
+            for (int j = 0; j < mStart; j++) {
+                if (i % 2 != 0 && j == mStart - 1) {
+                    continue;
+                }
+                if (fieldAlive[i][j] != fieldAliveStart[i][j]) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean[][] cloneArray(boolean[][] src) {
+        int length = src.length;
+        boolean[][] target = new boolean[length][src[0].length];
+        for (int i = 0; i < length; i++) {
+            System.arraycopy(src[i], 0, target[i], 0, src[i].length);
+        }
+        return target;
     }
 }

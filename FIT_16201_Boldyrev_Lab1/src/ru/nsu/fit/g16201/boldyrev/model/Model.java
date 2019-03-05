@@ -1,7 +1,6 @@
 package ru.nsu.fit.g16201.boldyrev.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Model {
     private double LIVE_BEGIN;
@@ -172,17 +171,6 @@ public class Model {
 
     }
 
-    public void invertField() {
-        for (int i = 0; i <= n - 1; i++) {
-            for (int j = 0; j <= m - 1; j++) {
-                fieldAlive[i][j] = !fieldAlive[i][j];
-                if (i % 2 != 0) {
-                    j += 2;
-                }
-            }
-        }
-    }
-
     public boolean setParameters(double live_begin, double live_end, double birth_begin, double birth_end,
                                     double fst_impact, double snd_impact) {
         if (live_begin <= birth_begin && birth_begin <= birth_end && birth_end <= live_end) {
@@ -260,13 +248,6 @@ public class Model {
 
     public void makeCellDead(int x, int y) { fieldAlive[x][y] = false; }
 
-    public boolean isCellAlive(int x, int y) {
-        if (fieldAlive[x][y]) {
-            return true;
-        }
-        return false;
-    }
-
     public boolean[][] getFieldAlive() {
         return this.fieldAlive;
     }
@@ -274,11 +255,4 @@ public class Model {
     public double[][] getFieldImpact() {
         return this.fieldImpact;
     }
-
-    public void makeCellAlivePrevious(int x, int y) {
-        fieldAlivePrevious[x][y] = true;
-    }
-
-    public void makeCellDeadPrevious(int x, int y) { fieldAlivePrevious[x][y] = false; }
-
 }
