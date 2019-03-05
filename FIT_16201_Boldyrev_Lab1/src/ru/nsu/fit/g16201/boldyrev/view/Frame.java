@@ -25,6 +25,8 @@ public class Frame extends JFrame {
     private boolean isUpdating;
 
     private Color impactsColor = Color.DARK_GRAY.darker();
+    private Color liveColor = Color.GREEN;
+    private Color deadColor = Color.WHITE;
 
     private JMenuBar menuBar;
     private JToolBar toolBar;
@@ -357,7 +359,7 @@ public class Frame extends JFrame {
         ActionListener lImpacts = l -> {
             impacts = !impacts;
             myPanel.setImpacts(impacts);
-            myPanel.drawImpacts(impactsColor);
+            myPanel.drawImpacts(impacts);
             jmImpacts.setSelected(impacts);
         };
 

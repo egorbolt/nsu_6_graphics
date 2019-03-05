@@ -315,7 +315,7 @@ public class MyPanel extends JPanel {
         }
 
         if (impacts) {
-            drawImpacts(impactsColor);
+            drawImpacts(impacts);
         }
 
         repaint();
@@ -332,7 +332,7 @@ public class MyPanel extends JPanel {
         gameProcess = new GameProcess(this);
     }
 
-    public void drawImpacts(Color color) {
+    public void drawImpacts(boolean b) {
         double [][] fieldImpact = model.getFieldImpact();
         String string;
         int x;
@@ -342,7 +342,9 @@ public class MyPanel extends JPanel {
 
         Font font = new Font("Plain", Font.PLAIN, k / 2);
         g1.setFont(font);
-        g1.setColor(color);
+        if (b) {
+            g1.setColor(impactsColor);
+        }
 
         for (i = 0; i < n; i++) {
             for (j = 0; j < m; j++) {
@@ -356,6 +358,14 @@ public class MyPanel extends JPanel {
                     string = String.format("%.0f", fieldImpact[i][j]).replace(",", ".");
                 } else {
                     string = String.format("%.1f", fieldImpact[i][j]).replace(",", ".");
+                }
+                if (!b) {
+                    if (image.getRGB(x - 2, y) == liveColor.getRGB()) {
+                        g1.setColor(liveColor);
+                    }
+                    else if (image.getRGB(x - 2, y) == deadColor.getRGB()) {
+                        g1.setColor(deadColor);
+                    }
                 }
                 g1.drawString(string, x, y);
             }

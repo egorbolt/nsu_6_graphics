@@ -6,8 +6,6 @@ import ru.nsu.fit.g16201.boldyrev.view.Frame;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class SaveLoad {
