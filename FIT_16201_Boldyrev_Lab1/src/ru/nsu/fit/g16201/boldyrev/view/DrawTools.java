@@ -140,14 +140,14 @@ public class DrawTools {
         }
     }
 
-    public static void spanColoring(BufferedImage image, int oldColor, int newColor, int x, int y) {
+    public static void spanColoring(BufferedImage image, int impactsColor, int oldColor, int newColor, int x, int y) {
         Stack<Span> stack = new Stack<>();
         Span nextSpan;
         int spanLength;
         Span s;
 
         if (image.getRGB(x, y) == oldColor) {
-            s = Span.getSpan(image, x, y, oldColor);
+            s = Span.getSpan(image, x, y, oldColor, impactsColor);
             stack.push(s);
         }
 
@@ -156,8 +156,8 @@ public class DrawTools {
             int seedY = s.getSeed();
             for (int i = s.getLeftBorder(); i <= s.getRightBorder(); i++) {
                 image.setRGB(i, seedY, newColor);
-                if (image.getRGB(i, seedY - 1) == oldColor) {
-                    nextSpan = Span.getSpan(image, i, seedY - 1, oldColor);
+                if (image.getRGB(i, seedY - 1) == oldColor || image.getRGB(i, seedY - 1) == impactsColor) {
+                    nextSpan = Span.getSpan(image, i, seedY - 1, oldColor, impactsColor);
                     spanLength = nextSpan.getSpanLength();
                     for (int j = 0; j < spanLength - 1; j++) {
                         if (i <= s.getRightBorder()) {
@@ -170,7 +170,7 @@ public class DrawTools {
             }
             for (int i = s.getLeftBorder(); i <= s.getRightBorder(); i++) {
                 if (image.getRGB(i, seedY + 1) == oldColor) {
-                    nextSpan = Span.getSpan(image, i, seedY + 1, oldColor);
+                    nextSpan = Span.getSpan(image, i, seedY + 1, oldColor, impactsColor);
                     spanLength = nextSpan.getSpanLength();
                     i += spanLength;
                     stack.push(nextSpan);

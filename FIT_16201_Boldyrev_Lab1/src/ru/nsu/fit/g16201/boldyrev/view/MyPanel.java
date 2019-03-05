@@ -32,6 +32,7 @@ public class MyPanel extends JPanel {
     private short[][] wasChanged;
     private Timer timer;
     private GameProcess gameProcess;
+    private int check = 0;
 
     private HashMap<Point, Point> pixelsToCenter;
     private HashMap<Point, Point> centersToPixels;
@@ -86,19 +87,19 @@ public class MyPanel extends JPanel {
                         Point p2 = pixelsToCenter.get(p);
                         if (replace && !xor) {
 
-                            DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
+                            DrawTools.spanColoring(image, impactsColor.getRGB(), deadColor.getRGB(), liveColor.getRGB(), x, y);
                             model.makeCellAlive(p2.x, p2.y);
                             model.nextImpact();
                             int a = 0;
                         }
                         else if (xor && !replace) {
                             if (image.getRGB(x, y) == liveColor.getRGB()) {
-                                DrawTools.spanColoring(image, liveColor.getRGB(), deadColor.getRGB(), x, y);
+                                DrawTools.spanColoring(image, impactsColor.getRGB(), liveColor.getRGB(), deadColor.getRGB(), x, y);
                                 model.makeCellDead(p2.x, p2.y);
                                 model.nextImpact();
                             }
                             else if (image.getRGB(x, y) == deadColor.getRGB()) {
-                                DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
+                                DrawTools.spanColoring(image, impactsColor.getRGB(), deadColor.getRGB(), liveColor.getRGB(), x, y);
                                 model.makeCellAlive(p2.x, p2.y);
                                 model.nextImpact();
                             }
@@ -146,20 +147,20 @@ public class MyPanel extends JPanel {
                         }
                         Point p2 = pixelsToCenter.get(p);
                         if (replace && !xor) {
-                            DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
+                            DrawTools.spanColoring(image, impactsColor.getRGB(), deadColor.getRGB(), liveColor.getRGB(), x, y);
                             model.makeCellAlive(p2.x, p2.y);
                             model.nextImpact();
                         }
                         else if (xor && !replace) {
                             int co = image.getRGB(x, y);
                             if (co == liveColor.getRGB() && wasChanged[p2.x][p2.y] != 2) {
-                                DrawTools.spanColoring(image, liveColor.getRGB(), deadColor.getRGB(), x, y);
+                                DrawTools.spanColoring(image, impactsColor.getRGB(), liveColor.getRGB(), deadColor.getRGB(), x, y);
                                 model.makeCellDead(p2.x, p2.y);
                                 model.nextImpact();
                                 wasChanged[p2.x][p2.y] = 1;
                             }
                             else if (co == deadColor.getRGB() && wasChanged[p2.x][p2.y] != 1) {
-                                DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
+                                DrawTools.spanColoring(image, impactsColor.getRGB(), deadColor.getRGB(), liveColor.getRGB(), x, y);
                                 model.makeCellAlive(p2.x, p2.y);
                                 model.nextImpact();
                                 wasChanged[p2.x][p2.y] = 2;
@@ -254,7 +255,7 @@ public class MyPanel extends JPanel {
                     Point a = new Point(i, j);
                     int x = (int) centersToPixels.get(a).getX();
                     int y = (int) centersToPixels.get(a).getY();
-                    DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), x, y);
+                    DrawTools.spanColoring(image, impactsColor.getRGB(), deadColor.getRGB(), liveColor.getRGB(), x, y);
                 }
             }
         }
@@ -287,33 +288,41 @@ public class MyPanel extends JPanel {
         model.checkCellsStatus();
         ArrayList<Integer[]> aliveCells = model.getAliveCells();
         ArrayList<Integer[]> deadCells = model.getDeadCells();
-        int i = 0;
-        int j = 0;
+        int i;
 
         for (i = 0; i < aliveCells.size(); i++) {
             Integer[] a = aliveCells.get(i);
             Point b = centersToPixels.get(new Point(a[0], a[1]));
             if (image.getRGB(b.x, b.y) == deadColor.getRGB()) {
-                DrawTools.spanColoring(image, deadColor.getRGB(), liveColor.getRGB(), b.x, b.y);
+                DrawTools.spanColoring(image, impactsColor.getRGB(), deadColor.getRGB(), liveColor.getRGB(), b.x, b.y);
+            }
+            else if (image.getRGB(b.x, b.y) == liveColor.getRGB()) {
+                DrawTools.spanColoring(image, impactsColor.getRGB(), liveColor.getRGB(), deadColor.getRGB(), b.x, b.y);
+                DrawTools.spanColoring(image, impactsColor.getRGB(), deadColor.getRGB(), liveColor.getRGB(), b.x, b.y);
             }
         }
+
         for (i = 0; i < deadCells.size(); i++) {
             Integer[] a = deadCells.get(i);
             Point b = centersToPixels.get(new Point(a[0], a[1]));
             if (image.getRGB(b.x, b.y) == liveColor.getRGB()) {
-                DrawTools.spanColoring(image, liveColor.getRGB(), deadColor.getRGB(), b.x, b.y);
+                DrawTools.spanColoring(image, impactsColor.getRGB(), liveColor.getRGB(), deadColor.getRGB(), b.x, b.y);
+            }
+            else if (image.getRGB(b.x, b.y) == deadColor.getRGB()) {
+                DrawTools.spanColoring(image, impactsColor.getRGB(), deadColor.getRGB(), liveColor.getRGB(), b.x, b.y);
+                DrawTools.spanColoring(image, impactsColor.getRGB(), liveColor.getRGB(), deadColor.getRGB(), b.x, b.y);
             }
         }
 
         if (impacts) {
-            drawImpacts(Color.DARK_GRAY.darker());
+            drawImpacts(impactsColor);
         }
 
         repaint();
     }
 
     public void playGame() {
-        timer.schedule(gameProcess, 0, 500);
+        timer.schedule(gameProcess, 0, 1000);
     }
 
     public void stopGame() {
@@ -323,13 +332,13 @@ public class MyPanel extends JPanel {
         gameProcess = new GameProcess(this);
     }
 
-    private void drawImpacts(Color color) {
+    public void drawImpacts(Color color) {
         double [][] fieldImpact = model.getFieldImpact();
-        String string = null;
-        int x = 0;
-        int y = 0;
-        int i = 0;
-        int j = 0;
+        String string;
+        int x;
+        int y;
+        int i;
+        int j;
 
         Font font = new Font("Plain", Font.PLAIN, k / 2);
         g1.setFont(font);
@@ -351,6 +360,8 @@ public class MyPanel extends JPanel {
                 g1.drawString(string, x, y);
             }
         }
+
+        repaint();
     }
 
     private class GameProcess extends TimerTask {

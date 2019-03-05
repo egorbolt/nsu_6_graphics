@@ -24,8 +24,7 @@ public class Frame extends JFrame {
     private double buffer = 0;
     private boolean isUpdating;
 
-    private Color liveColor;
-    private Color deadColor;
+    private Color impactsColor = Color.DARK_GRAY.darker();
 
     private JMenuBar menuBar;
     private JToolBar toolBar;
@@ -34,8 +33,6 @@ public class Frame extends JFrame {
 
     private boolean xorMode = false;
     private boolean impacts = false;
-    private boolean saved = false;
-    private boolean needUpdating = false;
 
     private int WIDTH;
     private int HEIGHT;
@@ -49,7 +46,7 @@ public class Frame extends JFrame {
 
         n = 6;
         m = 6;
-        k = 20;
+        k = 35;
         t = 1;
         WIDTH = 800;
         HEIGHT = 500;
@@ -146,51 +143,49 @@ public class Frame extends JFrame {
         ButtonGroup group3 = new ButtonGroup();
 
         JMenu fileMenu = new JMenu("File");
-        JMenuItem jmiNG = new JMenuItem("New Game");
-        fileMenu.add(jmiNG);
+        JMenuItem jmNew = new JMenuItem("New");
+        fileMenu.add(jmNew);
         JMenuItem jmOpen = new JMenuItem("Open");
         fileMenu.add(jmOpen);
         JMenuItem jmSave = new JMenuItem("Save");
         fileMenu.add(jmSave);
-        JMenuItem jmSaveAs = new JMenuItem("Save As...");
-        fileMenu.add(jmSaveAs);
         fileMenu.addSeparator();
         JMenuItem jmExit= new JMenuItem("Exit");
         jmExit.addActionListener(e -> { System.exit(0);});
         fileMenu.add(jmExit);
 
-//        JMenu modifyMenu = new JMenu("Modify");
-//        JMenuItem jmOptions = new JMenuItem("Options");
-//        modifyMenu.add(jmOptions);
-//        JMenuItem jmReplace = new JCheckBoxMenuItem("Replace");
-//        jmReplace.setSelected(!xorMode);
-//        modifyMenu.add(jmReplace);
-//        group3.add(jmReplace);
-//        JMenuItem jmXOR = new JCheckBoxMenuItem("XOR");
-//        jmXOR.setSelected(xorMode);
-//        modifyMenu.add(jmXOR);
-//        group3.add(jmXOR);
-//        JMenuItem jmImpacts = new JCheckBoxMenuItem("Impacts");
-//        jmImpacts.setSelected(impacts);
-//        modifyMenu.add(jmImpacts);
+        JMenu modifyMenu = new JMenu("Modify");
+        JMenuItem jmOptions = new JMenuItem("Options");
+        modifyMenu.add(jmOptions);
+        JMenuItem jmReplace = new JCheckBoxMenuItem("Replace");
+        jmReplace.setSelected(!xorMode);
+        modifyMenu.add(jmReplace);
+        group3.add(jmReplace);
+        JMenuItem jmXOR = new JCheckBoxMenuItem("XOR");
+        jmXOR.setSelected(xorMode);
+        modifyMenu.add(jmXOR);
+        group3.add(jmXOR);
+        JMenuItem jmImpacts = new JCheckBoxMenuItem("Impacts");
+        jmImpacts.setSelected(impacts);
+        modifyMenu.add(jmImpacts);
 
         JMenu actionMenu = new JMenu("Action");
         JMenuItem jmNext = new JMenuItem("Next step");
         actionMenu.add(jmNext);
-        JMenuItem jmRun = new JMenuItem("Play");
-        actionMenu.add(jmRun);
+        JMenuItem jmPlay = new JMenuItem("Play");
+        actionMenu.add(jmPlay);
         JMenuItem jmStop = new JMenuItem("Stop");
         actionMenu.add(jmStop);
         actionMenu.addSeparator();
         JMenuItem jmClear = new JMenuItem("Clear");
         actionMenu.add(jmClear);
         JMenu helpMenu = new JMenu("Help");
-        JMenuItem jmiAbout = new JMenuItem("About");
-        helpMenu.add(jmiAbout);
+        JMenuItem jmAbout = new JMenuItem("About");
+        helpMenu.add(jmAbout);
 
         menuBar.add(fileMenu);
         menuBar.add(actionMenu);
-//        menuBar.add(modifyMenu);
+        menuBar.add(modifyMenu);
         menuBar.add(helpMenu);
         /*end of creating menuBar*/
 
@@ -286,7 +281,7 @@ public class Frame extends JFrame {
                         JOptionPane.YES_NO_CANCEL_OPTION);
                 if (result != JOptionPane.CANCEL_OPTION) {
                     if (result == JOptionPane.YES_OPTION) {
-                        boolean isSaved = saveload.save(this, model);
+                        saveload.save(this, model);
                     }
                     myPanel.stopGame();
                     panel.remove(myPanel);
@@ -337,6 +332,8 @@ public class Frame extends JFrame {
             xorMode = true;
             bXor.setSelected(xorMode);
             bReplace.setSelected(!xorMode);
+            jmXOR.setSelected(true);
+            jmReplace.setSelected(false);
             myPanel.setXOR(xorMode);
         };
 
@@ -344,6 +341,8 @@ public class Frame extends JFrame {
             xorMode = false;
             bXor.setSelected(xorMode);
             bReplace.setSelected(!xorMode);
+            jmXOR.setSelected(false);
+            jmReplace.setSelected(true);
             myPanel.setXOR(xorMode);
         };
 
@@ -358,7 +357,8 @@ public class Frame extends JFrame {
         ActionListener lImpacts = l -> {
             impacts = !impacts;
             myPanel.setImpacts(impacts);
-
+            myPanel.drawImpacts(impactsColor);
+            jmImpacts.setSelected(impacts);
         };
 
         ActionListener lPlay = l -> {
@@ -374,17 +374,29 @@ public class Frame extends JFrame {
         };
 
         bClear.addActionListener(lClear);
+        jmClear.addActionListener(lClear);
         bSave.addActionListener(lSave);
+        jmSave.addActionListener(lSave);
         bOpen.addActionListener(lOpen);
+        jmOpen.addActionListener(lOpen);
         bOptions.addActionListener(lOptions);
+        jmOptions.addActionListener(lOptions);
         bAbout.addActionListener(lAbout);
+        jmAbout.addActionListener(lAbout);
         bNew.addActionListener(lNew);
+        jmNew.addActionListener(lNew);
         bXor.addActionListener(lXor);
+        jmXOR.addActionListener(lXor);
         bReplace.addActionListener(lReplace);
+        jmReplace.addActionListener(lReplace);
         bNext.addActionListener(lNext);
+        jmNext.addActionListener(lNext);
         bPlay.addActionListener(lPlay);
+        jmPlay.addActionListener(lPlay);
         bStop.addActionListener(lStop);
+        jmStop.addActionListener(lStop);
         bImpacts.addActionListener(lImpacts);
+        jmImpacts.addActionListener(lImpacts);
     }
 
     public int getK() {

@@ -26,15 +26,15 @@ public class Span {
         return this.seed;
     }
 
-    public static Span getSpan(BufferedImage image, int x, int y, int oldColor) {
+    public static Span getSpan(BufferedImage image, int x, int y, int oldColor, int impactsColor) {
         int spanLeft = x;
         int spanRight = x;
 
-        while (image.getRGB(spanLeft - 1, y) == oldColor) {
+        while (image.getRGB(spanLeft - 1, y) == oldColor || image.getRGB(spanLeft - 1, y) == impactsColor) {
             spanLeft--;
         }
 
-        while(image.getRGB(spanRight + 1, y) == oldColor) {
+        while(image.getRGB(spanRight + 1, y) == oldColor || image.getRGB(spanRight + 1, y) == impactsColor) {
             spanRight++;
         }
 
