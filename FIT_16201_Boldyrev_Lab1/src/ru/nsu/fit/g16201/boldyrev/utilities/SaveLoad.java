@@ -105,6 +105,9 @@ public class SaveLoad {
             t = params[2];
             k = params[3];
             cellAmount = params[4];
+            if (m == 0 || n == 0 || t == 0 || k == 0) {
+                throw new Exception();
+            }
 
             frame.setK(k);
             frame.setT(t);

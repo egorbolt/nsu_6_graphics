@@ -102,7 +102,7 @@ public class DrawTools {
     public static void drawField(Graphics2D g, int n, int m, int k, int thickness, HashMap<Point, Point> centers,
                     HashMap<Point, Point> pixels) {
         int xInit = 3;
-        int yInit = k + 1;
+        int yInit = k / 2 + 3;
         int xStart = xInit;
         int yStart = yInit;
         int xStartOdd = 0;

@@ -5,9 +5,7 @@ import ru.nsu.fit.g16201.boldyrev.utilities.SaveLoad;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import javax.swing.text.PlainDocument;
 
 public class Frame extends JFrame {
@@ -33,6 +31,10 @@ public class Frame extends JFrame {
 
     private int WIDTH;
     private int HEIGHT;
+
+    private int semichord;
+    private int nframe;
+    private int kDefault = 6;
 
     private Model model;
     MyPanel myPanel;
@@ -186,11 +188,23 @@ public class Frame extends JFrame {
         add(toolBar, BorderLayout.NORTH);
 
         JPanel panel = new JPanel();
-        if (3 * k * (m / 2 + 3) > WIDTH) {
-            WIDTH = 3 * k * (m / 2 + 3);
+        semichord = (int)(k * Math.sqrt(3)) + 1;
+        if (semichord * m > 800) {
+            WIDTH = semichord * m;
+        } else {
+            WIDTH = 800;
         }
-        if (3 * k * (n / 2 + 1) > HEIGHT) {
-            HEIGHT = 3 * k * (n / 2 + 1);
+        nframe = n / 2;
+        if (n % 2 != 0) {
+            nframe += 1;
+        }
+        if (3 * k * nframe > 500) {
+            HEIGHT = 3 * k * nframe;
+            if (n % 2 == 0) {
+                HEIGHT += k / 2 + 7;
+            }
+        } else {
+            HEIGHT = 500;
         }
         myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
         myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -209,9 +223,9 @@ public class Frame extends JFrame {
 
         ActionListener lClear = l -> {
             model.clearField();
+            myPanel.stopGame();
             bPlay.setSelected(false);
             bStop.setSelected(true);
-            myPanel.stopGame();
             myPanel.clearField();
         };
 
@@ -219,23 +233,6 @@ public class Frame extends JFrame {
             bPlay.setSelected(false);
             bStop.setSelected(true);
             myPanel.stopGame();
-//            if (saveload.shouldSave(model, this)) {
-//                int result = JOptionPane.showConfirmDialog(this,
-//                        "Field have been changed.\n" +
-//                                "Do you want to save current field?",
-//                        "Save?",
-//                        JOptionPane.YES_NO_CANCEL_OPTION);
-//                if (result == JOptionPane.YES_OPTION) {
-//
-//                }
-//            }
-//            else {
-//                JOptionPane.showMessageDialog(this,
-//                        "Field hasn't changed at all,\n" +
-//                                "it's not necessary to save.",
-//                        "No need to save",
-//                        JOptionPane.INFORMATION_MESSAGE);
-//            }
             saveload.save(this, model);
             myPanel.playGame();
         };
@@ -256,23 +253,62 @@ public class Frame extends JFrame {
                     if (result != JOptionPane.CANCEL_OPTION) {
                         if (result == JOptionPane.YES_OPTION) {
                             saveload.save(this, model);
-                        }
-                        else if (result == JOptionPane.NO_OPTION) {
                             saveload.load(this, model);
                             myPanel.stopGame();
                             n = model.getN();
                             m = model.getM();
-                            if (3 * k * (m / 2 + 3) > 800) {
-                                WIDTH = 3 * k * (m / 2 + 3);
+                            semichord = (int)(k * Math.sqrt(3)) + 1;
+                            if (semichord * m > 800) {
+                                WIDTH = semichord * m;
                             } else {
                                 WIDTH = 800;
                             }
-                            if (3 * k * (n / 2) > 500) {
-                                HEIGHT = 3 * k * (n / 2 + 1);
+                            nframe = n / 2;
+                            if (n % 2 != 0) {
+                                nframe += 1;
+                            }
+                            if (3 * k * nframe > 500) {
+                                HEIGHT = 3 * k * nframe;
+                                if (n % 2 == 0) {
+                                    HEIGHT += k / 2 + 7;
+                                }
                             } else {
                                 HEIGHT = 500;
                             }
-
+                            panel.remove(myPanel);
+                            myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
+                            myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+                            panel.add(myPanel);
+                            saveload.getStateAtLoad(model, this);
+                            myPanel.colorAliveCells();
+                            myPanel.setImpacts(false);
+                            xorMode = false;
+                            bXor.setSelected(false);
+                            bReplace.setSelected(true);
+                            pack();
+                        }
+                        else if (result == JOptionPane.NO_OPTION) {
+                            saveload.load(this, model);
+                            n = model.getN();
+                            m = model.getM();
+                            semichord = (int)(k * Math.sqrt(3)) + 1;
+                            if (semichord * m > 800) {
+                                WIDTH = semichord * m;
+                            } else {
+                                WIDTH = 800;
+                            }
+                            nframe = n / 2;
+                            if (n % 2 != 0) {
+                                nframe += 1;
+                            }
+                            if (3 * k * nframe > 500) {
+                                HEIGHT = 3 * k * nframe;
+                                if (n % 2 == 0) {
+                                    HEIGHT += k / 2 + 7;
+                                }
+                            } else {
+                                HEIGHT = 500;
+                            }
                             panel.remove(myPanel);
                             myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
                             myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -295,17 +331,24 @@ public class Frame extends JFrame {
                     myPanel.stopGame();
                     n = model.getN();
                     m = model.getM();
-                    if (3 * k * (m / 2 + 3) > 800) {
-                        WIDTH = 3 * k * (m / 2 + 3);
+                    semichord = (int)(k * Math.sqrt(3)) + 1;
+                    if (semichord * m > 800) {
+                        WIDTH = semichord * m;
                     } else {
                         WIDTH = 800;
                     }
-                    if (3 * k * (n / 2) > 500) {
-                        HEIGHT = 3 * k * (n / 2 + 1);
+                    nframe = n / 2;
+                    if (n % 2 != 0) {
+                        nframe += 1;
+                    }
+                    if (3 * k * nframe > 500) {
+                        HEIGHT = 3 * k * nframe;
+                        if (n % 2 == 0) {
+                            HEIGHT += k / 2 + 7;
+                        }
                     } else {
                         HEIGHT = 500;
                     }
-
                     panel.remove(myPanel);
                     myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
                     myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -345,6 +388,24 @@ public class Frame extends JFrame {
                     myPanel.stopGame();
                     panel.remove(myPanel);
                     model.resetField(n, m);
+                    semichord = (int)(k * Math.sqrt(3)) + 1;
+                    if (semichord * m > 800) {
+                        WIDTH = semichord * m;
+                    } else {
+                        WIDTH = 800;
+                    }
+                    nframe = n / 2;
+                    if (n % 2 != 0) {
+                        nframe += 1;
+                    }
+                    if (3 * k * nframe > 500) {
+                        HEIGHT = 3 * k * nframe;
+                        if (n % 2 == 0) {
+                            HEIGHT += k / 2 + 7;
+                        }
+                    } else {
+                        HEIGHT = 500;
+                    }
                     myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
                     myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
                     panel.add(myPanel);
@@ -376,7 +437,6 @@ public class Frame extends JFrame {
             bXor.setSelected(false);
             bReplace.setSelected(true);
             pack();
-            int a = 0;
         };
 
         ActionListener lAbout = l -> {
@@ -467,6 +527,29 @@ public class Frame extends JFrame {
         jmStop.addActionListener(lStop);
         bImpacts.addActionListener(lImpacts);
         jmImpacts.addActionListener(lImpacts);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent we) {
+                try {
+                    if (saveload.shouldSave(model, Frame.this)) {
+                        int result = JOptionPane.showConfirmDialog(Frame.this,
+                                "Field have been changed.\n" +
+                                        "Do you want to save current field?",
+                                "Save?",
+                                JOptionPane.YES_NO_CANCEL_OPTION);
+                        if (result != JOptionPane.CANCEL_OPTION) {
+                            if (result == JOptionPane.YES_OPTION) {
+                                myPanel.stopGame();
+                                saveload.save(Frame.this, model);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public int getK() {
@@ -526,7 +609,7 @@ public class Frame extends JFrame {
         JTextField kField = new JTextField();
         PlainDocument docK = (PlainDocument) kField.getDocument();
         docK.setDocumentFilter(integerFilter);
-        JSlider jSliderK = new JSlider(JSlider.HORIZONTAL,3,50,10);
+        JSlider jSliderK = new JSlider(JSlider.HORIZONTAL,1,50,10);
         kField.setText(k.toString());
         jSliderK.setValue(k);
         panelName.add(kLabel);
@@ -660,10 +743,13 @@ public class Frame extends JFrame {
                 int newK = Integer.parseInt(kField.getText());
                 if (newK != k) {
                     k = newK;
-                    if (k < 3) {
-                        k = 3;
-                    }
                     isUpdating = true;
+                }
+                if (k < 6) {
+                    k = 6;
+                    JOptionPane.showMessageDialog(this, "Size of hexagon is too small to play a game,\n" +
+                                    "k will be set to default value = " + kDefault,
+                            "Warning: small value of k", JOptionPane.WARNING_MESSAGE);
                 }
             }
 
