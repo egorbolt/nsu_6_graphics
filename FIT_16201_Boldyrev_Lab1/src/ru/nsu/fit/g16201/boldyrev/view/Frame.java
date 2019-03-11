@@ -8,6 +8,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.text.PlainDocument;
 
+import static javax.swing.BorderFactory.createEmptyBorder;
+
 public class Frame extends JFrame {
     private double LIVE_BEGIN = 2.0;
     private double LIVE_END = 3.3;
@@ -55,7 +57,8 @@ public class Frame extends JFrame {
         setMinimumSize(new Dimension(800, 600));
         setLayout(new BorderLayout());
         setTitle("Life");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+
 
         /*creating toolBar*/
         toolBar = new JToolBar();
@@ -204,15 +207,15 @@ public class Frame extends JFrame {
                 HEIGHT += k / 2 + 7;
             }
         } else {
-            HEIGHT = 500;
+            HEIGHT = 600;
         }
+        panel.setBackground(Color.WHITE);
         myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
         myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         panel.add(myPanel);
         saveload.getStateAtLoad(model, this);
         scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setWheelScrollingEnabled(true);
 
         add(scrollPane);
 
@@ -420,23 +423,48 @@ public class Frame extends JFrame {
         };
 
         ActionListener lNew = l -> {
-            bPlay.setSelected(false);
-            bStop.setSelected(true);
             int result = JOptionPane.showConfirmDialog(this,
-                    "Save current field?", "New", JOptionPane.YES_NO_CANCEL_OPTION);
-            if (result == JOptionPane.YES_OPTION) {
-                saveload.save(this, model);
+                            "Field will be set according to new parameters N and M.\n" +
+                            "Do you want to save current field?",
+                    "New",
+                    JOptionPane.YES_NO_CANCEL_OPTION);
+            if (result != JOptionPane.CANCEL_OPTION) {
+                if (result == JOptionPane.YES_OPTION) {
+                    myPanel.stopGame();
+                    saveload.save(this, model);
+                }
+                myPanel.stopGame();
+                showNewDialog();
+                panel.remove(myPanel);
+                model.resetField(n, m);
+                semichord = (int)(k * Math.sqrt(3)) + 1;
+                if (semichord * m > 800) {
+                    WIDTH = semichord * m;
+                } else {
+                    WIDTH = 800;
+                }
+                nframe = n / 2;
+                if (n % 2 != 0) {
+                    nframe += 1;
+                }
+                if (3 * k * nframe > 500) {
+                    HEIGHT = 3 * k * nframe;
+                    if (n % 2 == 0) {
+                        HEIGHT += k / 2 + 7;
+                    }
+                } else {
+                    HEIGHT = 500;
+                }
+                myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
+                myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+                panel.add(myPanel);
+                xorMode = false;
+                bXor.setSelected(false);
+                bReplace.setSelected(true);
+                bPlay.setSelected(false);
+                bStop.setSelected(true);
+                pack();
             }
-            myPanel.stopGame();
-            panel.remove(myPanel);
-            model.resetField(n, m);
-            myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
-            myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-            panel.add(myPanel);
-            xorMode = false;
-            bXor.setSelected(false);
-            bReplace.setSelected(true);
-            pack();
         };
 
         ActionListener lAbout = l -> {
@@ -531,23 +559,20 @@ public class Frame extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent we) {
-                try {
-                    if (saveload.shouldSave(model, Frame.this)) {
-                        int result = JOptionPane.showConfirmDialog(Frame.this,
-                                "Field have been changed.\n" +
-                                        "Do you want to save current field?",
-                                "Save?",
-                                JOptionPane.YES_NO_CANCEL_OPTION);
-                        if (result != JOptionPane.CANCEL_OPTION) {
-                            if (result == JOptionPane.YES_OPTION) {
-                                myPanel.stopGame();
-                                saveload.save(Frame.this, model);
-                            }
-                        }
+
+
+                int result = JOptionPane.showConfirmDialog(Frame.this,
+                                "Do you want to save current field?",
+                        "Save?",
+                        JOptionPane.YES_NO_CANCEL_OPTION);
+                if (result != JOptionPane.CANCEL_OPTION) {
+                    if (result == JOptionPane.YES_OPTION) {
+                        myPanel.stopGame();
+                        saveload.save(Frame.this, model);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    System.exit(0);
                 }
+
             }
         });
     }
@@ -902,6 +927,62 @@ public class Frame extends JFrame {
 
         dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         dialog.setPreferredSize(new Dimension(700,300));
+        dialog.setResizable(false);
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }
+
+    public void showNewDialog() {
+        JDialog dialog = new JDialog(this, "New Field", true);
+        IntegerFilter integerFilter = new IntegerFilter();
+
+        JPanel mainPanel = new JPanel(new GridLayout(1, 2));
+        JPanel panelName = new JPanel(new GridLayout(3, 1));
+        JPanel panelValues = new JPanel(new GridLayout(3, 1));
+
+        JLabel nLabel = new JLabel("N", SwingConstants.CENTER);
+        JTextField nField = new JTextField();
+        PlainDocument docN = (PlainDocument) nField.getDocument();
+        docN.setDocumentFilter(integerFilter);
+        nField.setText(n.toString());
+        panelName.add(nLabel);
+        panelValues.add(nField);
+
+        JLabel mLabel = new JLabel("M", SwingConstants.CENTER);
+        JTextField mField = new JTextField();
+        PlainDocument docM = (PlainDocument) mField.getDocument();
+        docM.setDocumentFilter(integerFilter);
+        mField.setText(m.toString());
+        panelName.add(mLabel);
+        panelValues.add(mField);
+
+        JButton okButton = new JButton("OK");
+
+        panelValues.add(okButton);
+
+        mainPanel.add(panelName);
+        mainPanel.add(panelValues);
+        dialog.add(mainPanel);
+
+        okButton.addActionListener(e-> {
+            if (!mField.getText().isEmpty()) {
+                int newM = Integer.parseInt(mField.getText());
+                if (newM != m) {
+                    m = newM;
+                }
+            }
+            if (!nField.getText().isEmpty()) {
+                int newN = Integer.parseInt(nField.getText());
+                if (newN != n) {
+                    n = newN;
+                }
+            }
+            dialog.dispose();
+        });
+
+        dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        dialog.setPreferredSize(new Dimension(300,100));
         dialog.setResizable(false);
         dialog.pack();
         dialog.setLocationRelativeTo(this);
