@@ -18,18 +18,12 @@ public class MonochromeFilter {
         for (int i = 0; i < sourceHeight; i++) {
             for (int j = 0; j < sourceWidth; j++) {
                 int rgb = source.getRGB(i, j);
-                Color a = new Color(rgb);
                 int r = (rgb >> 16) & 255;
                 int g = (rgb >> 8) & 255;
                 int b = rgb & 255;
 
-//                r = (int)(r * 0.299);
-//                g = (int)(g * 0.587);
-//                b = (int)(b * 0.114);
-
-                int newRGB = (int)(r * 0.299 + g * 0.587 + b * 0.114);
-//                int newRGB = ((r << 16) | (g << 8) | b);
-                Color x = new Color(newRGB);
+                int y = (int)(r * 0.299 + g * 0.587 + b * 0.114);
+                int newRGB = ((y << 16) | (y << 8) | y);
                 result.setRGB(i, j, newRGB);
             }
         }
