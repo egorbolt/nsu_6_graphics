@@ -59,13 +59,13 @@ public class MyPanel extends JPanel {
         this.timer = new Timer();
         this.gameProcess = new GameProcess(this);
 
-        this.image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        this.image = new BufferedImage(5000, 5000, BufferedImage.TYPE_INT_RGB);
         this.g1 = image.createGraphics();
 
 //        this.setBackground(Color.WHITE);
 
         g1.setColor(new Color(255, 255, 255));
-        g1.fillRect(0, 0, WIDTH, HEIGHT);
+        g1.fillRect(0, 0, 5000, 5000);
         g1.setColor(new Color(0, 0, 0));
         DrawTools.drawField(g1, this.n, this.m, this.k, this.thickness, this.pixelsToCenter, this.centersToPixels);
         repaint();
@@ -210,6 +210,10 @@ public class MyPanel extends JPanel {
         int i;
         int width = image.getWidth();
         int height = image.getHeight();
+
+        if (!((x >= 0 && y >= 0)) ) {
+            return false;
+        }
 
         for (i = x; i >= 0; i--) {
             if (image.getRGB(i, y) == borderColor.getRGB()) {
