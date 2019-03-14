@@ -6,9 +6,8 @@ import ru.nsu.fit.g16201.boldyrev.utilities.SaveLoad;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.text.NumberFormatter;
 import javax.swing.text.PlainDocument;
-
-import static javax.swing.BorderFactory.createEmptyBorder;
 
 public class Frame extends JFrame {
     private double LIVE_BEGIN = 2.0;
@@ -30,6 +29,7 @@ public class Frame extends JFrame {
 
     private boolean xorMode = false;
     private boolean impacts = false;
+    private boolean isPlaying;
 
     private int WIDTH;
     private int HEIGHT;
@@ -44,21 +44,21 @@ public class Frame extends JFrame {
     public Frame() {
         SaveLoad saveload = new SaveLoad();
         isUpdating = false;
+        isPlaying = false;
 
         n = 6;
         m = 6;
         k = 20;
         t = 1;
-        WIDTH = 800;
-        HEIGHT = 500;
         model = new Model(n, m);
 
-        setPreferredSize(new Dimension(800, 600));
-        setMinimumSize(new Dimension(800, 600));
+        setPreferredSize(new Dimension(813, 702));
         setLayout(new BorderLayout());
-        setTitle("Life");
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        setMinimumSize(new Dimension(580, 500));
 
+        setTitle("Life");
+
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         /*creating toolBar*/
         toolBar = new JToolBar();
@@ -190,7 +190,6 @@ public class Frame extends JFrame {
         setJMenuBar(menuBar);
         add(toolBar, BorderLayout.NORTH);
 
-        JPanel panel = new JPanel();
         semichord = (int)(k * Math.sqrt(3)) + 1;
         if (semichord * m > 800) {
             WIDTH = semichord * m;
@@ -201,7 +200,7 @@ public class Frame extends JFrame {
         if (n % 2 != 0) {
             nframe += 1;
         }
-        if (3 * k * nframe > 500) {
+        if (3 * k * nframe > 600) {
             HEIGHT = 3 * k * nframe;
             if (n % 2 == 0) {
                 HEIGHT += k / 2 + 7;
@@ -209,12 +208,14 @@ public class Frame extends JFrame {
         } else {
             HEIGHT = 600;
         }
-        panel.setBackground(Color.WHITE);
+
+        //780 483
+
         myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
         myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        panel.add(myPanel);
+        add(myPanel);
         saveload.getStateAtLoad(model, this);
-        scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+        scrollPane = new JScrollPane(myPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         add(scrollPane);
@@ -222,11 +223,12 @@ public class Frame extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-        setResizable(false);
+        setResizable(true);
 
         ActionListener lClear = l -> {
             model.clearField();
             myPanel.stopGame();
+            isPlaying = false;
             bPlay.setSelected(false);
             bStop.setSelected(true);
             myPanel.clearField();
@@ -236,6 +238,7 @@ public class Frame extends JFrame {
             bPlay.setSelected(false);
             bStop.setSelected(true);
             myPanel.stopGame();
+            isPlaying = false;
             saveload.save(this, model);
             myPanel.playGame();
         };
@@ -246,6 +249,7 @@ public class Frame extends JFrame {
             bImpacts.setSelected(false);
             impacts = false;
             myPanel.stopGame();
+            isPlaying = false;
             try {
                 if (saveload.shouldSave(model, this)) {
                     int result = JOptionPane.showConfirmDialog(this,
@@ -258,6 +262,7 @@ public class Frame extends JFrame {
                             saveload.save(this, model);
                             saveload.load(this, model);
                             myPanel.stopGame();
+                            isPlaying = false;
                             n = model.getN();
                             m = model.getM();
                             semichord = (int)(k * Math.sqrt(3)) + 1;
@@ -278,10 +283,15 @@ public class Frame extends JFrame {
                             } else {
                                 HEIGHT = 500;
                             }
-                            panel.remove(myPanel);
+                            remove(scrollPane);
+                            remove(myPanel);
                             myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
                             myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-                            panel.add(myPanel);
+                            add(myPanel);
+                            scrollPane = new JScrollPane(myPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+                            add(scrollPane);
                             saveload.getStateAtLoad(model, this);
                             myPanel.colorAliveCells();
                             myPanel.setImpacts(false);
@@ -312,10 +322,15 @@ public class Frame extends JFrame {
                             } else {
                                 HEIGHT = 500;
                             }
-                            panel.remove(myPanel);
+                            remove(scrollPane);
+                            remove(myPanel);
                             myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
                             myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-                            panel.add(myPanel);
+                            add(myPanel);
+                            scrollPane = new JScrollPane(myPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+                            add(scrollPane);
                             saveload.getStateAtLoad(model, this);
                             myPanel.colorAliveCells();
                             myPanel.setImpacts(false);
@@ -332,6 +347,7 @@ public class Frame extends JFrame {
                 else {
                     saveload.load(this, model);
                     myPanel.stopGame();
+                    isPlaying = false;
                     n = model.getN();
                     m = model.getM();
                     semichord = (int)(k * Math.sqrt(3)) + 1;
@@ -352,10 +368,15 @@ public class Frame extends JFrame {
                     } else {
                         HEIGHT = 500;
                     }
-                    panel.remove(myPanel);
+                    remove(scrollPane);
+                    remove(myPanel);
                     myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
                     myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-                    panel.add(myPanel);
+                    add(myPanel);
+                    scrollPane = new JScrollPane(myPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+                    add(scrollPane);
                     saveload.getStateAtLoad(model, this);
                     myPanel.colorAliveCells();
                     myPanel.setImpacts(false);
@@ -374,7 +395,359 @@ public class Frame extends JFrame {
         };
 
         ActionListener lOptions = l -> {
-            optionsDialog();
+            JPanel dialog = new JPanel();
+            IntegerFilter integerFilter = new IntegerFilter();
+            DoubleFilter doubleFilter = new DoubleFilter();
+
+            JPanel mainPanel = new JPanel(new GridLayout(1, 7));
+            JPanel panelName = new JPanel(new GridLayout(6, 1));
+            JPanel panelSliders = new JPanel(new GridLayout(6, 1));
+            JPanel panelValues = new JPanel(new GridLayout(6, 1));
+
+            JPanel panelBegin = new JPanel(new GridLayout(6,1));
+            JPanel panelValuesForBegin = new JPanel(new GridLayout(6,1));
+            JPanel panelEnd = new JPanel(new GridLayout(6,1));
+            JPanel panelValuesForEnd = new JPanel(new GridLayout(6,1));
+
+            JLabel nLabel = new JLabel("N", SwingConstants.CENTER);
+//        NumberFormatter nf = new NumberFormatter();
+//        nf.setMinimum(new Integer(30));
+//        nf.setMaximum(new Integer(70));
+//        final JFormattedTextField nField = new JFormattedTextField(nf);
+            JTextField nField = new JTextField();
+            PlainDocument docN = (PlainDocument) nField.getDocument();
+            docN.setDocumentFilter(integerFilter);
+            JSlider jSliderN = new JSlider(JSlider.HORIZONTAL, 1, 100, 1);
+            nField.setText(n.toString());
+            jSliderN.setValue(n);
+            panelName.add(nLabel);
+            panelSliders.add(jSliderN);
+            panelValues.add(nField);
+
+            JLabel mLabel = new JLabel("M", SwingConstants.CENTER);
+            JTextField mField = new JTextField();
+            PlainDocument docM = (PlainDocument) mField.getDocument();
+            docM.setDocumentFilter(integerFilter);
+            JSlider jSliderM = new JSlider(JSlider.HORIZONTAL,1,100,1);
+            mField.setText(m.toString());
+            jSliderM.setValue(m);
+            panelName.add(mLabel);
+            panelSliders.add(jSliderM);
+            panelValues.add(mField);
+
+            JLabel kLabel = new JLabel("K", SwingConstants.CENTER);
+            JTextField kField = new JTextField();
+            PlainDocument docK = (PlainDocument) kField.getDocument();
+            docK.setDocumentFilter(integerFilter);
+            JSlider jSliderK = new JSlider(JSlider.HORIZONTAL,1,50,10);
+            kField.setText(k.toString());
+            jSliderK.setValue(k);
+            panelName.add(kLabel);
+            panelSliders.add(jSliderK);
+            panelValues.add(kField);
+
+            JLabel tLabel = new JLabel("Thickness", SwingConstants.CENTER);
+            JTextField tField = new JTextField();
+            PlainDocument docT = (PlainDocument) tField.getDocument();
+            docT.setDocumentFilter(integerFilter);
+            JSlider jSliderT = new JSlider(JSlider.HORIZONTAL,1,8,1);
+            tField.setText(t.toString());
+            jSliderT.setValue(t);
+            panelName.add(tLabel);
+            panelSliders.add(jSliderT);
+            panelValues.add(tField);
+
+            ButtonGroup group = new ButtonGroup();
+
+            JRadioButton xorButton = new JRadioButton("XOR", false);
+            xorButton.setSelected(xorMode);
+            group.add(xorButton);
+
+            JRadioButton replaceButton = new JRadioButton("Replace", true);
+            replaceButton.setSelected(!xorMode);
+            group.add(replaceButton);
+
+            JLabel labelFST = new JLabel("FST_IMPACT", SwingConstants.CENTER);
+            JTextField jFST = new JTextField();
+            PlainDocument docFST = (PlainDocument)jFST.getDocument();
+            docFST.setDocumentFilter(doubleFilter);
+            if (FST_IMPACT % 1 == 0.00){
+                jFST.setText(String.format("%.0f", FST_IMPACT).replace(",","."));
+            } else
+                jFST.setText(String.format("%.1f", FST_IMPACT).replace(",","."));
+
+            panelBegin.add(labelFST);
+            panelValuesForBegin.add(jFST);
+
+            JLabel labelLB = new JLabel("LIVE_BEGIN", SwingConstants.CENTER);
+            JTextField jLB = new JTextField();
+            PlainDocument docLB = (PlainDocument) jLB.getDocument();
+            docLB.setDocumentFilter(doubleFilter);
+            if (LIVE_BEGIN % 1 == 0.00){
+                jLB.setText(String.format("%.0f", LIVE_BEGIN).replace(",","."));
+            } else
+                jLB.setText(String.format("%.1f", LIVE_BEGIN).replace(",","."));
+
+            panelBegin.add(labelLB);
+            panelValuesForBegin.add(jLB);
+
+            JLabel labelBB = new JLabel("BIRTH_BEGIN", SwingConstants.CENTER);
+            JTextField jBB = new JTextField();
+            PlainDocument docBB = (PlainDocument) jBB.getDocument();
+            docBB.setDocumentFilter(doubleFilter);
+            if (BIRTH_BEGIN % 1 == 0.00){
+                jBB.setText(String.format("%.0f", BIRTH_BEGIN).replace(",","."));
+            } else
+                jBB.setText(String.format("%.1f", BIRTH_BEGIN).replace(",","."));
+
+            panelBegin.add(labelBB);
+            panelValuesForBegin.add(jBB);
+
+            JLabel labelSND = new JLabel("SND_IMPACT", SwingConstants.CENTER);
+            JTextField jSND = new JTextField();
+            PlainDocument docSND = (PlainDocument) jSND.getDocument();
+            docSND.setDocumentFilter(doubleFilter);
+            if (SND_IMPACT % 1 == 0.00){
+                jSND.setText(String.format("%.0f", SND_IMPACT).replace(",","."));
+            } else
+                jSND.setText(String.format("%.1f", SND_IMPACT).replace(",","."));
+
+            panelEnd.add(labelSND);
+            panelValuesForEnd.add(jSND);
+
+            JLabel labelLE = new JLabel("LIVE_END", SwingConstants.CENTER);
+            JTextField jLE = new JTextField();
+            PlainDocument docLE = (PlainDocument) jLE.getDocument();
+            docLE.setDocumentFilter(doubleFilter);
+            if (LIVE_END % 1 == 0.00){
+                jLE.setText(String.format("%.0f", LIVE_END).replace(",","."));
+            } else
+                jLE.setText(String.format("%.1f", LIVE_END).replace(",","."));
+
+            panelEnd.add(labelLE);
+            panelValuesForEnd.add(jLE);
+
+            JLabel labelBE = new JLabel("BIRTH_END", SwingConstants.CENTER);
+            JTextField jBE = new JTextField();
+            PlainDocument docBE = (PlainDocument) jBE.getDocument();
+            docBE.setDocumentFilter(doubleFilter);
+            if (BIRTH_END % 1 == 0.00){
+                jBE.setText(String.format("%.0f", BIRTH_END).replace(",","."));
+            } else
+                jBE.setText(String.format("%.1f", BIRTH_END).replace(",","."));
+
+            panelEnd.add(labelBE);
+            panelValuesForEnd.add(jBE);
+
+            panelSliders.add(xorButton);
+            panelValues.add(replaceButton);
+
+            mainPanel.add(panelName);
+            mainPanel.add(panelSliders);
+            mainPanel.add(panelValues);
+            mainPanel.add(panelBegin);
+            mainPanel.add(panelValuesForBegin);
+            mainPanel.add(panelEnd);
+            mainPanel.add(panelValuesForEnd);
+            dialog.add(mainPanel);
+
+            jSliderM.addChangeListener(e ->
+                    mField.setText(((Integer) ((JSlider) e.getSource()).getValue()).toString())
+            );
+
+            jSliderN.addChangeListener(e ->
+                    nField.setText(((Integer) ((JSlider) e.getSource()).getValue()).toString())
+            );
+
+            jSliderK.addChangeListener(e ->
+                    kField.setText(((Integer)((JSlider)e.getSource()).getValue()).toString())
+            );
+
+            jSliderT.addChangeListener(e ->
+                    tField.setText(((Integer)((JSlider)e.getSource()).getValue()).toString())
+            );
+
+            mField.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    if(!mField.getText().isEmpty())
+                        jSliderM.setValue(Integer.parseInt(mField.getText()));
+                }
+            });
+
+            nField.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    if(!nField.getText().isEmpty())
+                        jSliderN.setValue(Integer.parseInt(nField.getText()));
+                }
+            });
+
+            kField.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    if(!kField.getText().isEmpty())
+                        jSliderK.setValue(Integer.parseInt(kField.getText()));
+                }
+            });
+
+            tField.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    if(!tField.getText().isEmpty())
+                        jSliderT.setValue(Integer.parseInt(tField.getText()));
+                }
+            });
+
+            xorButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    xorMode = true;
+                    bXor.setSelected(xorMode);
+                    bReplace.setSelected(!xorMode);
+                    jmXOR.setSelected(true);
+                    jmReplace.setSelected(false);
+                    myPanel.setXOR(xorMode);
+                }
+            });
+
+            replaceButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    xorMode = false;
+                    bXor.setSelected(xorMode);
+                    bReplace.setSelected(!xorMode);
+                    jmXOR.setSelected(false);
+                    jmReplace.setSelected(true);
+                    myPanel.setXOR(xorMode);
+                }
+            });
+
+            mainPanel.setPreferredSize(new Dimension(600, 250));
+            dialog.setPreferredSize(new Dimension(600,250));
+            dialog.setVisible(true);
+
+            int res = JOptionPane.showConfirmDialog(null, dialog, "Settings",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (res == JOptionPane.OK_OPTION) {
+                if (!mField.getText().isEmpty()) {
+                    int newM = Integer.parseInt(mField.getText());
+                    if (newM != m) {
+                        m = newM;
+                        isUpdating = true;
+                    }
+                }
+                if (!nField.getText().isEmpty()) {
+                    int newN = Integer.parseInt(nField.getText());
+                    if (newN != n) {
+                        n = newN;
+                        isUpdating = true;
+                    }
+                }
+                if (!kField.getText().isEmpty()) {
+                    int newK = Integer.parseInt(kField.getText());
+                    if (newK != k) {
+                        k = newK;
+                        isUpdating = true;
+                    }
+                    if (k < 6) {
+                        k = 6;
+                        JOptionPane.showMessageDialog(this, "Size of hexagon is too small to play a game,\n" +
+                                        "k will be set to default value = " + kDefault,
+                                "Warning: small value of k", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+
+                if (!tField.getText().isEmpty()) {
+                    int newT = Integer.parseInt(tField.getText());
+                    if (newT != t) {
+                        t = newT;
+                        isUpdating = true;
+                    }
+                }
+
+                if (!jFST.getText().isEmpty()) {
+                    try {
+                        FST_IMPACT = Double.parseDouble(jFST.getText().replace(",", "."));
+                    } catch (NumberFormatException err) {
+                        err.printStackTrace();
+                    }
+
+                }
+
+                if (!jSND.getText().isEmpty()) {
+                    try {
+                        SND_IMPACT = Double.parseDouble(jSND.getText().replace(",", "."));
+                    } catch (NumberFormatException err) {
+                        err.printStackTrace();
+                    }
+                }
+
+                if (!jLB.getText().isEmpty()) {
+                    try {
+                        buffer = Double.parseDouble(jLB.getText().replace(",", "."));
+                        if (buffer <= BIRTH_BEGIN) {
+                            LIVE_BEGIN = buffer;
+                        } else {
+                            JOptionPane.showMessageDialog(this,
+                                    "LIVE_BEGIN should be LIVE_BEGIN <= BIRTH_BEGIN",
+                                    "Incorrect input", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } catch (NumberFormatException err) {
+                        err.printStackTrace();
+                    }
+                }
+
+
+                if (!jBB.getText().isEmpty()) {
+                    try {
+                        buffer = Double.parseDouble(jBB.getText().replace(",", "."));
+                        if (buffer <= BIRTH_END && LIVE_BEGIN <= buffer) {
+                            BIRTH_BEGIN = buffer;
+
+                        } else {
+                            JOptionPane.showMessageDialog(this,
+                                    "BIRTH_BEGIN should be BIRTH_BEGIN <= BIRTH_END",
+                                    "Incorrect input", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } catch (NumberFormatException err) {
+                        err.printStackTrace();
+                    }
+                }
+
+
+                if (!jLE.getText().isEmpty()) {
+                    try {
+                        buffer = Double.parseDouble(jLE.getText().replace(",", "."));
+                        if (BIRTH_END <= buffer) {
+                            LIVE_END = buffer;
+                        } else {
+                            JOptionPane.showMessageDialog(this,
+                                    "LIVE_END should be BIRTH_END <= LIVE_END",
+                                    "Incorrect input", JOptionPane.INFORMATION_MESSAGE);
+                        }
+
+                    } catch (NumberFormatException n) {
+                        n.printStackTrace();
+                    }
+                }
+
+                if (!jBE.getText().isEmpty()) {
+                    try {
+                        buffer = Double.parseDouble(jBE.getText().replace(",", "."));
+                        if (BIRTH_BEGIN <= buffer && buffer <= LIVE_END) {
+                            BIRTH_END = buffer;
+                        }
+                        else {
+                            JOptionPane.showMessageDialog(this,
+                                    "BIRTH_END should be BIRTH_BEGIN <= BIRTH_END <= LIVE_END",
+                                    "Incorrect input", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } catch (NumberFormatException n) {
+                        n.printStackTrace();
+                    }
+                }
+            }
             model.setParameters(LIVE_BEGIN, LIVE_END, BIRTH_BEGIN, BIRTH_END, FST_IMPACT, SND_IMPACT);
             if (isUpdating) {
                 isUpdating = false;
@@ -389,7 +762,9 @@ public class Frame extends JFrame {
                         saveload.save(this, model);
                     }
                     myPanel.stopGame();
-                    panel.remove(myPanel);
+                    isPlaying = false;
+                    remove(scrollPane);
+                    remove(myPanel);
                     model.resetField(n, m);
                     semichord = (int)(k * Math.sqrt(3)) + 1;
                     if (semichord * m > 800) {
@@ -411,7 +786,11 @@ public class Frame extends JFrame {
                     }
                     myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
                     myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-                    panel.add(myPanel);
+                    add(myPanel);
+                    scrollPane = new JScrollPane(myPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+                    add(scrollPane);
                     xorMode = false;
                     bXor.setSelected(false);
                     bReplace.setSelected(true);
@@ -431,11 +810,14 @@ public class Frame extends JFrame {
             if (result != JOptionPane.CANCEL_OPTION) {
                 if (result == JOptionPane.YES_OPTION) {
                     myPanel.stopGame();
+                    isPlaying = false;
                     saveload.save(this, model);
                 }
                 myPanel.stopGame();
+                isPlaying = false;
                 showNewDialog();
-                panel.remove(myPanel);
+                remove(scrollPane);
+                remove(myPanel);
                 model.resetField(n, m);
                 semichord = (int)(k * Math.sqrt(3)) + 1;
                 if (semichord * m > 800) {
@@ -457,7 +839,11 @@ public class Frame extends JFrame {
                 }
                 myPanel = new MyPanel(n, m, k, t, WIDTH, HEIGHT, model);
                 myPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-                panel.add(myPanel);
+                add(myPanel);
+                scrollPane = new JScrollPane(myPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+                add(scrollPane);
                 xorMode = false;
                 bXor.setSelected(false);
                 bReplace.setSelected(true);
@@ -522,13 +908,17 @@ public class Frame extends JFrame {
         ActionListener lPlay = l -> {
             bPlay.setSelected(true);
             bStop.setSelected(false);
-            myPanel.playGame();
+            if (!isPlaying) {
+                myPanel.playGame();
+                isPlaying = true;
+            }
         };
 
         ActionListener lStop = l -> {
             bPlay.setSelected(false);
             bStop.setSelected(true);
             myPanel.stopGame();
+            isPlaying = false;
         };
 
         bClear.addActionListener(lClear);
@@ -559,20 +949,23 @@ public class Frame extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent we) {
-
-
-                int result = JOptionPane.showConfirmDialog(Frame.this,
-                                "Do you want to save current field?",
-                        "Save?",
-                        JOptionPane.YES_NO_CANCEL_OPTION);
-                if (result != JOptionPane.CANCEL_OPTION) {
-                    if (result == JOptionPane.YES_OPTION) {
-                        myPanel.stopGame();
-                        saveload.save(Frame.this, model);
+                if (saveload.shouldSave(model, Frame.this)) {
+                    int result = JOptionPane.showConfirmDialog(Frame.this,
+                            "Do you want to save current field?",
+                            "Save?",
+                            JOptionPane.YES_NO_CANCEL_OPTION);
+                    if (result != JOptionPane.CANCEL_OPTION) {
+                        if (result == JOptionPane.YES_OPTION) {
+                            myPanel.stopGame();
+                            isPlaying = false;
+                            saveload.save(Frame.this, model);
+                        }
+                        System.exit(0);
                     }
+                }
+                else {
                     System.exit(0);
                 }
-
             }
         });
     }
@@ -593,345 +986,350 @@ public class Frame extends JFrame {
         this.t = t;
     }
 
-    public void optionsDialog() {
-        JDialog dialog = new JDialog(this, "Settings", true);
-        IntegerFilter integerFilter = new IntegerFilter();
-        DoubleFilter doubleFilter = new DoubleFilter();
-
-        JPanel mainPanel = new JPanel(new GridLayout(1, 7));
-        JPanel panelName = new JPanel(new GridLayout(6, 1));
-        JPanel panelSliders = new JPanel(new GridLayout(6, 1));
-        JPanel panelValues = new JPanel(new GridLayout(6, 1));
-
-        JPanel panelBegin = new JPanel(new GridLayout(6,1));
-        JPanel panelValuesForBegin = new JPanel(new GridLayout(6,1));
-        JPanel panelEnd = new JPanel(new GridLayout(6,1));
-        JPanel panelValuesForEnd = new JPanel(new GridLayout(6,1));
-
-        JLabel nLabel = new JLabel("N", SwingConstants.CENTER);
-        JTextField nField = new JTextField();
-        PlainDocument docN = (PlainDocument) nField.getDocument();
-        docN.setDocumentFilter(integerFilter);
-        JSlider jSliderN = new JSlider(JSlider.HORIZONTAL, 1, 100, 1);
-        nField.setText(n.toString());
-        jSliderN.setValue(n);
-        panelName.add(nLabel);
-        panelSliders.add(jSliderN);
-        panelValues.add(nField);
-
-        JLabel mLabel = new JLabel("M", SwingConstants.CENTER);
-        JTextField mField = new JTextField();
-        PlainDocument docM = (PlainDocument) mField.getDocument();
-        docM.setDocumentFilter(integerFilter);
-        JSlider jSliderM = new JSlider(JSlider.HORIZONTAL,1,100,1);
-        mField.setText(m.toString());
-        jSliderM.setValue(m);
-        panelName.add(mLabel);
-        panelSliders.add(jSliderM);
-        panelValues.add(mField);
-
-        JLabel kLabel = new JLabel("K", SwingConstants.CENTER);
-        JTextField kField = new JTextField();
-        PlainDocument docK = (PlainDocument) kField.getDocument();
-        docK.setDocumentFilter(integerFilter);
-        JSlider jSliderK = new JSlider(JSlider.HORIZONTAL,1,50,10);
-        kField.setText(k.toString());
-        jSliderK.setValue(k);
-        panelName.add(kLabel);
-        panelSliders.add(jSliderK);
-        panelValues.add(kField);
-
-        JLabel tLabel = new JLabel("Thickness", SwingConstants.CENTER);
-        JTextField tField = new JTextField();
-        PlainDocument docT = (PlainDocument) tField.getDocument();
-        docT.setDocumentFilter(integerFilter);
-        JSlider jSliderT = new JSlider(JSlider.HORIZONTAL,1,8,1);
-        tField.setText(t.toString());
-        jSliderT.setValue(t);
-        panelName.add(tLabel);
-        panelSliders.add(jSliderT);
-        panelValues.add(tField);
-
-        ButtonGroup group = new ButtonGroup();
-
-        JRadioButton xorButton = new JRadioButton("XOR", false);
-        xorButton.setSelected(xorMode);
-        group.add(xorButton);
-
-        JRadioButton replaceButton = new JRadioButton("Replace", true);
-        replaceButton.setSelected(!xorMode);
-        group.add(replaceButton);
-
-        JButton okButton = new JButton("OK");
-
-        JLabel labelFST = new JLabel("FST_IMPACT", SwingConstants.CENTER);
-        JTextField jFST = new JTextField();
-        PlainDocument docFST = (PlainDocument)jFST.getDocument();
-        docFST.setDocumentFilter(doubleFilter);
-        if (FST_IMPACT % 1 == 0.00){
-            jFST.setText(String.format("%.0f", FST_IMPACT).replace(",","."));
-        } else
-            jFST.setText(String.format("%.1f", FST_IMPACT).replace(",","."));
-
-        panelBegin.add(labelFST);
-        panelValuesForBegin.add(jFST);
-
-        JLabel labelLB = new JLabel("LIVE_BEGIN", SwingConstants.CENTER);
-        JTextField jLB = new JTextField();
-        PlainDocument docLB = (PlainDocument) jLB.getDocument();
-        docLB.setDocumentFilter(doubleFilter);
-        if (LIVE_BEGIN % 1 == 0.00){
-            jLB.setText(String.format("%.0f", LIVE_BEGIN).replace(",","."));
-        } else
-            jLB.setText(String.format("%.1f", LIVE_BEGIN).replace(",","."));
-
-        panelBegin.add(labelLB);
-        panelValuesForBegin.add(jLB);
-
-        JLabel labelBB = new JLabel("BIRTH_BEGIN", SwingConstants.CENTER);
-        JTextField jBB = new JTextField();
-        PlainDocument docBB = (PlainDocument) jBB.getDocument();
-        docBB.setDocumentFilter(doubleFilter);
-        if (BIRTH_BEGIN % 1 == 0.00){
-            jBB.setText(String.format("%.0f", BIRTH_BEGIN).replace(",","."));
-        } else
-            jBB.setText(String.format("%.1f", BIRTH_BEGIN).replace(",","."));
-
-        panelBegin.add(labelBB);
-        panelValuesForBegin.add(jBB);
-
-        JLabel labelSND = new JLabel("SND_IMPACT", SwingConstants.CENTER);
-        JTextField jSND = new JTextField();
-        PlainDocument docSND = (PlainDocument) jSND.getDocument();
-        docSND.setDocumentFilter(doubleFilter);
-        if (SND_IMPACT % 1 == 0.00){
-            jSND.setText(String.format("%.0f", SND_IMPACT).replace(",","."));
-        } else
-            jSND.setText(String.format("%.1f", SND_IMPACT).replace(",","."));
-
-        panelEnd.add(labelSND);
-        panelValuesForEnd.add(jSND);
-
-        JLabel labelLE = new JLabel("LIVE_END", SwingConstants.CENTER);
-        JTextField jLE = new JTextField();
-        PlainDocument docLE = (PlainDocument) jLE.getDocument();
-        docLE.setDocumentFilter(doubleFilter);
-        if (LIVE_END % 1 == 0.00){
-            jLE.setText(String.format("%.0f", LIVE_END).replace(",","."));
-        } else
-            jLE.setText(String.format("%.1f", LIVE_END).replace(",","."));
-
-        panelEnd.add(labelLE);
-        panelValuesForEnd.add(jLE);
-
-        JLabel labelBE = new JLabel("BIRTH_END", SwingConstants.CENTER);
-        JTextField jBE = new JTextField();
-        PlainDocument docBE = (PlainDocument) jBE.getDocument();
-        docBE.setDocumentFilter(doubleFilter);
-        if (BIRTH_END % 1 == 0.00){
-            jBE.setText(String.format("%.0f", BIRTH_END).replace(",","."));
-        } else
-            jBE.setText(String.format("%.1f", BIRTH_END).replace(",","."));
-
-        panelEnd.add(labelBE);
-        panelValuesForEnd.add(jBE);
-
-        panelSliders.add(xorButton);
-        panelValues.add(replaceButton);
-        panelValues.add(okButton);
-
-        mainPanel.add(panelName);
-        mainPanel.add(panelSliders);
-        mainPanel.add(panelValues);
-        mainPanel.add(panelBegin);
-        mainPanel.add(panelValuesForBegin);
-        mainPanel.add(panelEnd);
-        mainPanel.add(panelValuesForEnd);
-        dialog.add(mainPanel);
-
-        okButton.addActionListener(e-> {
-            if (!mField.getText().isEmpty()) {
-                int newM = Integer.parseInt(mField.getText());
-                if (newM != m) {
-                    m = newM;
-                    isUpdating = true;
-                }
-            }
-            if (!nField.getText().isEmpty()) {
-                int newN = Integer.parseInt(nField.getText());
-                if (newN != n) {
-                    n = newN;
-                    isUpdating = true;
-                }
-            }
-            if (!kField.getText().isEmpty()) {
-                int newK = Integer.parseInt(kField.getText());
-                if (newK != k) {
-                    k = newK;
-                    isUpdating = true;
-                }
-                if (k < 6) {
-                    k = 6;
-                    JOptionPane.showMessageDialog(this, "Size of hexagon is too small to play a game,\n" +
-                                    "k will be set to default value = " + kDefault,
-                            "Warning: small value of k", JOptionPane.WARNING_MESSAGE);
-                }
-            }
-
-            if (!tField.getText().isEmpty()) {
-                int newT = Integer.parseInt(tField.getText());
-                if (newT != t) {
-                    t = newT;
-                    isUpdating = true;
-                }
-            }
-
-            if (!jFST.getText().isEmpty()) {
-                try {
-                    FST_IMPACT = Double.parseDouble(jFST.getText().replace(",", "."));
-                } catch (NumberFormatException err) {
-                    err.printStackTrace();
-                }
-
-            }
-
-            if (!jSND.getText().isEmpty()) {
-                try {
-                    SND_IMPACT = Double.parseDouble(jSND.getText().replace(",", "."));
-                } catch (NumberFormatException err) {
-                    err.printStackTrace();
-                }
-            }
-
-            if (!jLB.getText().isEmpty()) {
-                try {
-                    buffer = Double.parseDouble(jLB.getText().replace(",", "."));
-                    if (buffer <= BIRTH_BEGIN) {
-                        LIVE_BEGIN = buffer;
-                    } else {
-                        JOptionPane.showMessageDialog(this,
-                                "LIVE_BEGIN should be LIVE_BEGIN <= BIRTH_BEGIN",
-                                "Incorrect input", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                } catch (NumberFormatException err) {
-                    err.printStackTrace();
-                }
-            }
-
-
-            if (!jBB.getText().isEmpty()) {
-                try {
-                    buffer = Double.parseDouble(jBB.getText().replace(",", "."));
-                    if (buffer <= BIRTH_END && LIVE_BEGIN <= buffer) {
-                        BIRTH_BEGIN = buffer;
-
-                    } else {
-                        JOptionPane.showMessageDialog(this,
-                                "BIRTH_BEGIN should be BIRTH_BEGIN <= BIRTH_END",
-                                "Incorrect input", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                } catch (NumberFormatException err) {
-                    err.printStackTrace();
-                }
-            }
-
-
-            if (!jLE.getText().isEmpty()) {
-                try {
-                    buffer = Double.parseDouble(jLE.getText().replace(",", "."));
-                    if (BIRTH_END <= buffer) {
-                        LIVE_END = buffer;
-                    } else {
-                        JOptionPane.showMessageDialog(this,
-                                "LIVE_END should be BIRTH_END <= LIVE_END",
-                                "Incorrect input", JOptionPane.INFORMATION_MESSAGE);
-                    }
-
-                } catch (NumberFormatException n) {
-                    n.printStackTrace();
-                }
-            }
-
-            if (!jBE.getText().isEmpty()) {
-                try {
-                    buffer = Double.parseDouble(jBE.getText().replace(",", "."));
-                    if (BIRTH_BEGIN <= buffer && buffer <= LIVE_END) {
-                        BIRTH_END = buffer;
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(this,
-                                "BIRTH_END should be BIRTH_BEGIN <= BIRTH_END <= LIVE_END",
-                                "Incorrect input", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                } catch (NumberFormatException n) {
-                    n.printStackTrace();
-                }
-            }
-
-            dialog.dispose();
-        });
-
-        jSliderM.addChangeListener(e ->
-                mField.setText(((Integer) ((JSlider) e.getSource()).getValue()).toString())
-        );
-
-        jSliderN.addChangeListener(e ->
-                nField.setText(((Integer) ((JSlider) e.getSource()).getValue()).toString())
-        );
-
-        jSliderK.addChangeListener(e ->
-                kField.setText(((Integer)((JSlider)e.getSource()).getValue()).toString())
-        );
-
-        jSliderT.addChangeListener(e ->
-                tField.setText(((Integer)((JSlider)e.getSource()).getValue()).toString())
-        );
-
-        mField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if(!mField.getText().isEmpty())
-                    jSliderM.setValue(Integer.parseInt(mField.getText()));
-            }
-        });
-
-        nField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if(!nField.getText().isEmpty())
-                    jSliderN.setValue(Integer.parseInt(nField.getText()));
-            }
-        });
-
-        kField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if(!kField.getText().isEmpty())
-                    jSliderK.setValue(Integer.parseInt(kField.getText()));
-            }
-        });
-
-        tField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if(!tField.getText().isEmpty())
-                    jSliderT.setValue(Integer.parseInt(tField.getText()));
-            }
-        });
-
-        xorButton.addActionListener(e ->
-                xorMode = true);
-        replaceButton.addActionListener(e ->
-                xorMode = false);
-
-
-        dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        dialog.setPreferredSize(new Dimension(700,300));
-        dialog.setResizable(false);
-        dialog.pack();
-        dialog.setLocationRelativeTo(this);
-        dialog.setVisible(true);
-    }
+//    public JPanel optionsDialog() {
+//        JPanel dialog = new JPanel();
+//        IntegerFilter integerFilter = new IntegerFilter();
+//        DoubleFilter doubleFilter = new DoubleFilter();
+//
+//        JPanel mainPanel = new JPanel(new GridLayout(1, 7));
+//        JPanel panelName = new JPanel(new GridLayout(6, 1));
+//        JPanel panelSliders = new JPanel(new GridLayout(6, 1));
+//        JPanel panelValues = new JPanel(new GridLayout(6, 1));
+//
+//        JPanel panelBegin = new JPanel(new GridLayout(6,1));
+//        JPanel panelValuesForBegin = new JPanel(new GridLayout(6,1));
+//        JPanel panelEnd = new JPanel(new GridLayout(6,1));
+//        JPanel panelValuesForEnd = new JPanel(new GridLayout(6,1));
+//
+//        JLabel nLabel = new JLabel("N", SwingConstants.CENTER);
+////        NumberFormatter nf = new NumberFormatter();
+////        nf.setMinimum(new Integer(30));
+////        nf.setMaximum(new Integer(70));
+////        final JFormattedTextField nField = new JFormattedTextField(nf);
+//        JTextField nField = new JTextField();
+//        PlainDocument docN = (PlainDocument) nField.getDocument();
+//        docN.setDocumentFilter(integerFilter);
+//        JSlider jSliderN = new JSlider(JSlider.HORIZONTAL, 1, 100, 1);
+//        nField.setText(n.toString());
+//        jSliderN.setValue(n);
+//        panelName.add(nLabel);
+//        panelSliders.add(jSliderN);
+//        panelValues.add(nField);
+//
+//        JLabel mLabel = new JLabel("M", SwingConstants.CENTER);
+//        JTextField mField = new JTextField();
+//        PlainDocument docM = (PlainDocument) mField.getDocument();
+//        docM.setDocumentFilter(integerFilter);
+//        JSlider jSliderM = new JSlider(JSlider.HORIZONTAL,1,100,1);
+//        mField.setText(m.toString());
+//        jSliderM.setValue(m);
+//        panelName.add(mLabel);
+//        panelSliders.add(jSliderM);
+//        panelValues.add(mField);
+//
+//        JLabel kLabel = new JLabel("K", SwingConstants.CENTER);
+//        JTextField kField = new JTextField();
+//        PlainDocument docK = (PlainDocument) kField.getDocument();
+//        docK.setDocumentFilter(integerFilter);
+//        JSlider jSliderK = new JSlider(JSlider.HORIZONTAL,1,50,10);
+//        kField.setText(k.toString());
+//        jSliderK.setValue(k);
+//        panelName.add(kLabel);
+//        panelSliders.add(jSliderK);
+//        panelValues.add(kField);
+//
+//        JLabel tLabel = new JLabel("Thickness", SwingConstants.CENTER);
+//        JTextField tField = new JTextField();
+//        PlainDocument docT = (PlainDocument) tField.getDocument();
+//        docT.setDocumentFilter(integerFilter);
+//        JSlider jSliderT = new JSlider(JSlider.HORIZONTAL,1,8,1);
+//        tField.setText(t.toString());
+//        jSliderT.setValue(t);
+//        panelName.add(tLabel);
+//        panelSliders.add(jSliderT);
+//        panelValues.add(tField);
+//
+//        ButtonGroup group = new ButtonGroup();
+//
+//        JRadioButton xorButton = new JRadioButton("XOR", false);
+//        xorButton.setSelected(xorMode);
+//        group.add(xorButton);
+//
+//        JRadioButton replaceButton = new JRadioButton("Replace", true);
+//        replaceButton.setSelected(!xorMode);
+//        group.add(replaceButton);
+//
+//        JButton okButton = new JButton("OK");
+//
+//        JLabel labelFST = new JLabel("FST_IMPACT", SwingConstants.CENTER);
+//        JTextField jFST = new JTextField();
+//        PlainDocument docFST = (PlainDocument)jFST.getDocument();
+//        docFST.setDocumentFilter(doubleFilter);
+//        if (FST_IMPACT % 1 == 0.00){
+//            jFST.setText(String.format("%.0f", FST_IMPACT).replace(",","."));
+//        } else
+//            jFST.setText(String.format("%.1f", FST_IMPACT).replace(",","."));
+//
+//        panelBegin.add(labelFST);
+//        panelValuesForBegin.add(jFST);
+//
+//        JLabel labelLB = new JLabel("LIVE_BEGIN", SwingConstants.CENTER);
+//        JTextField jLB = new JTextField();
+//        PlainDocument docLB = (PlainDocument) jLB.getDocument();
+//        docLB.setDocumentFilter(doubleFilter);
+//        if (LIVE_BEGIN % 1 == 0.00){
+//            jLB.setText(String.format("%.0f", LIVE_BEGIN).replace(",","."));
+//        } else
+//            jLB.setText(String.format("%.1f", LIVE_BEGIN).replace(",","."));
+//
+//        panelBegin.add(labelLB);
+//        panelValuesForBegin.add(jLB);
+//
+//        JLabel labelBB = new JLabel("BIRTH_BEGIN", SwingConstants.CENTER);
+//        JTextField jBB = new JTextField();
+//        PlainDocument docBB = (PlainDocument) jBB.getDocument();
+//        docBB.setDocumentFilter(doubleFilter);
+//        if (BIRTH_BEGIN % 1 == 0.00){
+//            jBB.setText(String.format("%.0f", BIRTH_BEGIN).replace(",","."));
+//        } else
+//            jBB.setText(String.format("%.1f", BIRTH_BEGIN).replace(",","."));
+//
+//        panelBegin.add(labelBB);
+//        panelValuesForBegin.add(jBB);
+//
+//        JLabel labelSND = new JLabel("SND_IMPACT", SwingConstants.CENTER);
+//        JTextField jSND = new JTextField();
+//        PlainDocument docSND = (PlainDocument) jSND.getDocument();
+//        docSND.setDocumentFilter(doubleFilter);
+//        if (SND_IMPACT % 1 == 0.00){
+//            jSND.setText(String.format("%.0f", SND_IMPACT).replace(",","."));
+//        } else
+//            jSND.setText(String.format("%.1f", SND_IMPACT).replace(",","."));
+//
+//        panelEnd.add(labelSND);
+//        panelValuesForEnd.add(jSND);
+//
+//        JLabel labelLE = new JLabel("LIVE_END", SwingConstants.CENTER);
+//        JTextField jLE = new JTextField();
+//        PlainDocument docLE = (PlainDocument) jLE.getDocument();
+//        docLE.setDocumentFilter(doubleFilter);
+//        if (LIVE_END % 1 == 0.00){
+//            jLE.setText(String.format("%.0f", LIVE_END).replace(",","."));
+//        } else
+//            jLE.setText(String.format("%.1f", LIVE_END).replace(",","."));
+//
+//        panelEnd.add(labelLE);
+//        panelValuesForEnd.add(jLE);
+//
+//        JLabel labelBE = new JLabel("BIRTH_END", SwingConstants.CENTER);
+//        JTextField jBE = new JTextField();
+//        PlainDocument docBE = (PlainDocument) jBE.getDocument();
+//        docBE.setDocumentFilter(doubleFilter);
+//        if (BIRTH_END % 1 == 0.00){
+//            jBE.setText(String.format("%.0f", BIRTH_END).replace(",","."));
+//        } else
+//            jBE.setText(String.format("%.1f", BIRTH_END).replace(",","."));
+//
+//        panelEnd.add(labelBE);
+//        panelValuesForEnd.add(jBE);
+//
+//        panelSliders.add(xorButton);
+//        panelValues.add(replaceButton);
+//        panelValues.add(okButton);
+//
+//        mainPanel.add(panelName);
+//        mainPanel.add(panelSliders);
+//        mainPanel.add(panelValues);
+//        mainPanel.add(panelBegin);
+//        mainPanel.add(panelValuesForBegin);
+//        mainPanel.add(panelEnd);
+//        mainPanel.add(panelValuesForEnd);
+//        dialog.add(mainPanel);
+//
+//        okButton.addActionListener(e-> {
+//            if (!mField.getText().isEmpty()) {
+//                int newM = Integer.parseInt(mField.getText());
+//                if (newM != m) {
+//                    m = newM;
+//                    isUpdating = true;
+//                }
+//            }
+//            if (!nField.getText().isEmpty()) {
+//                int newN = Integer.parseInt(nField.getText());
+//                if (newN != n) {
+//                    n = newN;
+//                    isUpdating = true;
+//                }
+//            }
+//            if (!kField.getText().isEmpty()) {
+//                int newK = Integer.parseInt(kField.getText());
+//                if (newK != k) {
+//                    k = newK;
+//                    isUpdating = true;
+//                }
+//                if (k < 6) {
+//                    k = 6;
+//                    JOptionPane.showMessageDialog(this, "Size of hexagon is too small to play a game,\n" +
+//                                    "k will be set to default value = " + kDefault,
+//                            "Warning: small value of k", JOptionPane.WARNING_MESSAGE);
+//                }
+//            }
+//
+//            if (!tField.getText().isEmpty()) {
+//                int newT = Integer.parseInt(tField.getText());
+//                if (newT != t) {
+//                    t = newT;
+//                    isUpdating = true;
+//                }
+//            }
+//
+//            if (!jFST.getText().isEmpty()) {
+//                try {
+//                    FST_IMPACT = Double.parseDouble(jFST.getText().replace(",", "."));
+//                } catch (NumberFormatException err) {
+//                    err.printStackTrace();
+//                }
+//
+//            }
+//
+//            if (!jSND.getText().isEmpty()) {
+//                try {
+//                    SND_IMPACT = Double.parseDouble(jSND.getText().replace(",", "."));
+//                } catch (NumberFormatException err) {
+//                    err.printStackTrace();
+//                }
+//            }
+//
+//            if (!jLB.getText().isEmpty()) {
+//                try {
+//                    buffer = Double.parseDouble(jLB.getText().replace(",", "."));
+//                    if (buffer <= BIRTH_BEGIN) {
+//                        LIVE_BEGIN = buffer;
+//                    } else {
+//                        JOptionPane.showMessageDialog(this,
+//                                "LIVE_BEGIN should be LIVE_BEGIN <= BIRTH_BEGIN",
+//                                "Incorrect input", JOptionPane.INFORMATION_MESSAGE);
+//                    }
+//                } catch (NumberFormatException err) {
+//                    err.printStackTrace();
+//                }
+//            }
+//
+//
+//            if (!jBB.getText().isEmpty()) {
+//                try {
+//                    buffer = Double.parseDouble(jBB.getText().replace(",", "."));
+//                    if (buffer <= BIRTH_END && LIVE_BEGIN <= buffer) {
+//                        BIRTH_BEGIN = buffer;
+//
+//                    } else {
+//                        JOptionPane.showMessageDialog(this,
+//                                "BIRTH_BEGIN should be BIRTH_BEGIN <= BIRTH_END",
+//                                "Incorrect input", JOptionPane.INFORMATION_MESSAGE);
+//                    }
+//                } catch (NumberFormatException err) {
+//                    err.printStackTrace();
+//                }
+//            }
+//
+//
+//            if (!jLE.getText().isEmpty()) {
+//                try {
+//                    buffer = Double.parseDouble(jLE.getText().replace(",", "."));
+//                    if (BIRTH_END <= buffer) {
+//                        LIVE_END = buffer;
+//                    } else {
+//                        JOptionPane.showMessageDialog(this,
+//                                "LIVE_END should be BIRTH_END <= LIVE_END",
+//                                "Incorrect input", JOptionPane.INFORMATION_MESSAGE);
+//                    }
+//
+//                } catch (NumberFormatException n) {
+//                    n.printStackTrace();
+//                }
+//            }
+//
+//            if (!jBE.getText().isEmpty()) {
+//                try {
+//                    buffer = Double.parseDouble(jBE.getText().replace(",", "."));
+//                    if (BIRTH_BEGIN <= buffer && buffer <= LIVE_END) {
+//                        BIRTH_END = buffer;
+//                    }
+//                    else {
+//                        JOptionPane.showMessageDialog(this,
+//                                "BIRTH_END should be BIRTH_BEGIN <= BIRTH_END <= LIVE_END",
+//                                "Incorrect input", JOptionPane.INFORMATION_MESSAGE);
+//                    }
+//                } catch (NumberFormatException n) {
+//                    n.printStackTrace();
+//                }
+//            }
+//
+////            dialog.dispose();
+//        });
+//
+//        jSliderM.addChangeListener(e ->
+//                mField.setText(((Integer) ((JSlider) e.getSource()).getValue()).toString())
+//        );
+//
+//        jSliderN.addChangeListener(e ->
+//                nField.setText(((Integer) ((JSlider) e.getSource()).getValue()).toString())
+//        );
+//
+//        jSliderK.addChangeListener(e ->
+//                kField.setText(((Integer)((JSlider)e.getSource()).getValue()).toString())
+//        );
+//
+//        jSliderT.addChangeListener(e ->
+//                tField.setText(((Integer)((JSlider)e.getSource()).getValue()).toString())
+//        );
+//
+//        mField.addKeyListener(new KeyAdapter() {
+//            @Override
+//            public void keyReleased(KeyEvent e) {
+//                if(!mField.getText().isEmpty())
+//                    jSliderM.setValue(Integer.parseInt(mField.getText()));
+//            }
+//        });
+//
+//        nField.addKeyListener(new KeyAdapter() {
+//            @Override
+//            public void keyReleased(KeyEvent e) {
+//                if(!nField.getText().isEmpty())
+//                    jSliderN.setValue(Integer.parseInt(nField.getText()));
+//            }
+//        });
+//
+//        kField.addKeyListener(new KeyAdapter() {
+//            @Override
+//            public void keyReleased(KeyEvent e) {
+//                if(!kField.getText().isEmpty())
+//                    jSliderK.setValue(Integer.parseInt(kField.getText()));
+//            }
+//        });
+//
+//        tField.addKeyListener(new KeyAdapter() {
+//            @Override
+//            public void keyReleased(KeyEvent e) {
+//                if(!tField.getText().isEmpty())
+//                    jSliderT.setValue(Integer.parseInt(tField.getText()));
+//            }
+//        });
+//
+//        xorButton.addActionListener(e ->
+//                xorMode = true);
+//        replaceButton.addActionListener(e ->
+//                xorMode = false);
+//
+//
+////        dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+//        dialog.setPreferredSize(new Dimension(700,300));
+////        dialog.setResizable(false);
+////        dialog.pack();
+////        dialog.setLocationRelativeTo(this);
+//        dialog.setVisible(true);
+//        return dialog;
+//    }
 
     public void showNewDialog() {
         JDialog dialog = new JDialog(this, "New Field", true);

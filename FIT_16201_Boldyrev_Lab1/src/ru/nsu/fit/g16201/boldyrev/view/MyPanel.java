@@ -62,6 +62,8 @@ public class MyPanel extends JPanel {
         this.image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         this.g1 = image.createGraphics();
 
+//        this.setBackground(Color.WHITE);
+
         g1.setColor(new Color(255, 255, 255));
         g1.fillRect(0, 0, WIDTH, HEIGHT);
         g1.setColor(new Color(0, 0, 0));
