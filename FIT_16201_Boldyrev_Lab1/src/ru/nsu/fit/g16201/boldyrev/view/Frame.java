@@ -191,8 +191,8 @@ public class Frame extends JFrame {
         add(toolBar, BorderLayout.NORTH);
 
         semichord = (int)(k * Math.sqrt(3)) + 1;
-        if (semichord * m > 800) {
-            WIDTH = semichord * m - m + t;
+        if (semichord * m - m + t + 4 > 800) {
+            WIDTH = semichord * m - m + t + 4;
         } else {
             WIDTH = 800;
         }
@@ -269,8 +269,8 @@ public class Frame extends JFrame {
                             n = model.getN();
                             m = model.getM();
                             semichord = (int)(k * Math.sqrt(3)) + 1;
-                            if (semichord * m > 800) {
-                                WIDTH = semichord * m - semichord + t;
+                            if (semichord * m - m + t + 4 > 800) {
+                                WIDTH = semichord * m - m + t + 4;
                             } else {
                                 WIDTH = 800;
                             }
@@ -311,8 +311,8 @@ public class Frame extends JFrame {
                             n = model.getN();
                             m = model.getM();
                             semichord = (int)(k * Math.sqrt(3)) + 1;
-                            if (semichord * m > 800) {
-                                WIDTH = semichord * m - semichord + t;
+                            if (semichord * m - m + t + 4 > 800) {
+                                WIDTH = semichord * m - m + t + 4;
                             } else {
                                 WIDTH = 800;
                             }
@@ -360,8 +360,8 @@ public class Frame extends JFrame {
                     n = model.getN();
                     m = model.getM();
                     semichord = (int)(k * Math.sqrt(3)) + 1;
-                    if (semichord * m > 800) {
-                        WIDTH = semichord * m - semichord + t;
+                    if (semichord * m - m + t + 4 > 800) {
+                        WIDTH = semichord * m - m + t + 4;
                     } else {
                         WIDTH = 800;
                     }
@@ -812,7 +812,7 @@ public class Frame extends JFrame {
                 JOptionPane.showMessageDialog(this, "You have set wrong parameters!,\n" +
                                 "n must be [1..100]\n" +
                                 "m must be [1..100]\n" +
-                                "k must be [1..50]\n" +
+                                "k must be [6..50]\n" +
                                 "t must be [1..8]",
                         "Warning: wrong parameters", JOptionPane.WARNING_MESSAGE);
             }
@@ -837,8 +837,8 @@ public class Frame extends JFrame {
                             remove(myPanel);
                             model.resetField(n, m);
                             semichord = (int) (k * Math.sqrt(3)) + 1;
-                            if (semichord * m > 800) {
-                                WIDTH = semichord * m - semichord + t;
+                            if (semichord * m - m + t + 4 > 800) {
+                                WIDTH = semichord * m - m + t + 4;
                             } else {
                                 WIDTH = 800;
                             }
@@ -877,8 +877,8 @@ public class Frame extends JFrame {
                         remove(myPanel);
                         model.resetField(n, m);
                         semichord = (int) (k * Math.sqrt(3)) + 1;
-                        if (semichord * m > 800) {
-                            WIDTH = semichord * m - semichord + t;
+                        if (semichord * m - m + t + 4 > 800) {
+                            WIDTH = semichord * m - m + t + 4;
                         } else {
                             WIDTH = 800;
                         }
@@ -933,8 +933,8 @@ public class Frame extends JFrame {
                 remove(myPanel);
                 model.resetField(n, m);
                 semichord = (int)(k * Math.sqrt(3)) + 1;
-                if (semichord * m > 800) {
-                    WIDTH = semichord * m - semichord + t;
+                if (semichord * m - m + t + 4 > 800) {
+                    WIDTH = semichord * m - m + t + 4;
                 } else {
                     WIDTH = 800;
                 }
