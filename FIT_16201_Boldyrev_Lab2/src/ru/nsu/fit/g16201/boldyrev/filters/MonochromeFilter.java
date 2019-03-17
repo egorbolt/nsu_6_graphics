@@ -2,7 +2,6 @@ package ru.nsu.fit.g16201.boldyrev.filters;
 
 import ru.nsu.fit.g16201.boldyrev.view.panels.MyImage;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class MonochromeFilter {
@@ -27,8 +26,6 @@ public class MonochromeFilter {
                 result.setRGB(i, j, newRGB);
             }
         }
-
-//        MyImage newMyImage = new MyImage(result);
 
         return result;
     }

@@ -2,6 +2,7 @@ package ru.nsu.fit.g16201.boldyrev.view.frame;
 
 import ru.nsu.fit.g16201.boldyrev.filters.MonochromeFilter;
 import ru.nsu.fit.g16201.boldyrev.filters.NegativeFilter;
+import ru.nsu.fit.g16201.boldyrev.filters.WatercoloringFilter;
 import ru.nsu.fit.g16201.boldyrev.view.panels.MyImage;
 import ru.nsu.fit.g16201.boldyrev.view.panels.MyPanel;
 import ru.nsu.fit.g16201.boldyrev.view.utils.SaveLoad;
@@ -39,6 +40,7 @@ public class MainFrame extends JFrame {
         JButton bSave = createJButton("Save");
         JButton bReplace = createJButton("Replace");
         JButton bXor = createJButton("Xor");
+        JButton bImpacts = createJButton("Impacts");
 
         toolBar.add(bNew);
         toolBar.add(bOpen);
@@ -46,6 +48,7 @@ public class MainFrame extends JFrame {
         toolBar.add(new JToolBar.Separator());
         toolBar.add(bReplace);
         toolBar.add(bXor);
+        toolBar.add(bImpacts);
         add(toolBar, BorderLayout.NORTH);
         /*end of creating toolbar*/
 
@@ -76,9 +79,16 @@ public class MainFrame extends JFrame {
             myPanel.setZoneC(result);
         };
 
+        ActionListener lWatercolor = l -> {
+            MyImage source = myPanel.getZoneA();
+            BufferedImage result = WatercoloringFilter.filterWatercolor(source);
+            myPanel.setZoneC(result);
+        };
+
         bOpen.addActionListener(lOpen);
         bReplace.addActionListener(lNegative);
         bXor.addActionListener(lMonochrome);
+        bImpacts.addActionListener(lWatercolor);
     }
 
     private JButton createJButton(String iconName) {
