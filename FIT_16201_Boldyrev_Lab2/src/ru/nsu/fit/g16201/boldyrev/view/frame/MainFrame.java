@@ -43,6 +43,7 @@ public class MainFrame extends JFrame {
         JButton bSharper = createJButton("Sharper");
         JButton bStamping = createJButton("Stamping");
         JButton bMagnifier = createJButton("Magnifier");
+        JButton bBlur = createJButton("Blur");
 
         toolBar.add(bNew);
         toolBar.add(bOpen);
@@ -54,6 +55,7 @@ public class MainFrame extends JFrame {
         toolBar.add(bSharper);
         toolBar.add(bStamping);
         toolBar.add(bMagnifier);
+        toolBar.add(bBlur);
         add(toolBar, BorderLayout.NORTH);
         /*end of creating toolbar*/
 
@@ -121,6 +123,13 @@ public class MainFrame extends JFrame {
             myPanel.setZoneC(result);
         };
 
+        ActionListener lBlur = l -> {
+            MyImage source = myPanel.getZoneA();
+            BlurFilter f = new BlurFilter();
+            BufferedImage result = f.filterBlur(source);
+            myPanel.setZoneC(result);
+        };
+
         bOpen.addActionListener(lOpen);
         bNegative.addActionListener(lNegative);
         bMonochrome.addActionListener(lMonochrome);
@@ -129,6 +138,7 @@ public class MainFrame extends JFrame {
         bSharper.addActionListener(lSharp);
         bStamping.addActionListener(lStamp);
         bMagnifier.addActionListener(lMagnifier);
+        bBlur.addActionListener(lBlur);
     }
 
     private JButton createJButton(String iconName) {
