@@ -49,35 +49,35 @@ public class MyImage extends JPanel {
         height = image.getHeight();
 
 
-//        if (width <= ZONE_SIDE_SIZE && height <= ZONE_SIDE_SIZE) {
-//            selectHeight = height;
-//            selectWidth = width;
-//            Image buffer = image.getScaledInstance(ZONE_SIDE_SIZE, ZONE_SIDE_SIZE, Image.SCALE_SMOOTH);
-////            imageBorders = new BufferedImage(buffer.getWidth(null), buffer.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-//            imageBorders = itobi(buffer);
-//            g.drawImage(image, 0, 0, this);
-//        }
-//        else {
-//            double resizing = (double)(width) / height;
-//
-//            if (height > width) {
-//                selectHeight = selectWidth = ZONE_SIDE_SIZE * ZONE_SIDE_SIZE / height;
-//            }
-//            else {
-//                selectHeight = selectWidth = ZONE_SIDE_SIZE * ZONE_SIDE_SIZE / width;
-//            }
-//
-//            if (resizing >= 1) {
-//                Image buffer = image.getScaledInstance(ZONE_SIDE_SIZE, (int) (ZONE_SIDE_SIZE / resizing), Image.SCALE_SMOOTH);
-//                imageBorders = itobi(buffer);
-//                g.drawImage(image, 0, 0, ZONE_SIDE_SIZE, (int) (ZONE_SIDE_SIZE / resizing), null);
-//            } else {
-//                Image buffer = image.getScaledInstance((int) (ZONE_SIDE_SIZE * resizing), ZONE_SIDE_SIZE, Image.SCALE_SMOOTH);
-//                imageBorders = itobi(buffer);
-//                g.drawImage(image, 0, 0, (int) (ZONE_SIDE_SIZE * resizing), ZONE_SIDE_SIZE, null);
-//            }
-//        }
-        g.drawImage(image, 0, 0, this);
+        if (width <= ZONE_SIDE_SIZE && height <= ZONE_SIDE_SIZE) {
+            selectHeight = height;
+            selectWidth = width;
+            Image buffer = image.getScaledInstance(ZONE_SIDE_SIZE, ZONE_SIDE_SIZE, Image.SCALE_SMOOTH);
+//            imageBorders = new BufferedImage(buffer.getWidth(null), buffer.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+            imageBorders = itobi(buffer);
+            g.drawImage(image, 0, 0, this);
+        }
+        else {
+            double resizing = (double)(width) / height;
+
+            if (height > width) {
+                selectHeight = selectWidth = ZONE_SIDE_SIZE * ZONE_SIDE_SIZE / height;
+            }
+            else {
+                selectHeight = selectWidth = ZONE_SIDE_SIZE * ZONE_SIDE_SIZE / width;
+            }
+
+            if (resizing >= 1) {
+                Image buffer = image.getScaledInstance(ZONE_SIDE_SIZE, (int) (ZONE_SIDE_SIZE / resizing), Image.SCALE_SMOOTH);
+                imageBorders = itobi(buffer);
+                g.drawImage(image, 0, 0, ZONE_SIDE_SIZE, (int) (ZONE_SIDE_SIZE / resizing), null);
+            } else {
+                Image buffer = image.getScaledInstance((int) (ZONE_SIDE_SIZE * resizing), ZONE_SIDE_SIZE, Image.SCALE_SMOOTH);
+                imageBorders = itobi(buffer);
+                g.drawImage(image, 0, 0, (int) (ZONE_SIDE_SIZE * resizing), ZONE_SIDE_SIZE, null);
+            }
+        }
+//        g.drawImage(image, 0, 0, this);
     }
 
     public void loadImage(File file) {

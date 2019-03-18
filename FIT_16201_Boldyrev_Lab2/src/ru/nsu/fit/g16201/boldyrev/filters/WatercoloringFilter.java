@@ -11,7 +11,7 @@ public class WatercoloringFilter {
 
     }
 
-    public static BufferedImage filterWatercolor(MyImage myImage) {
+    public BufferedImage filterWatercolor(MyImage myImage) {
         BufferedImage source = myImage.getImage();
         int sourceHeight = source.getHeight();
         int sourceWidth = source.getWidth();
@@ -23,19 +23,40 @@ public class WatercoloringFilter {
         int redResult = 0;
         int greenResult = 0;
         int blueResult = 0;
+        int sourcePixelX;
+        int sourcePixelY;
         double[][] matrix = {{-0.75, -0.75, -0.75},
                             {-0.75, 7, -0.75,},
                             {-0.75, -0.75, -0.75}};
 
-        for (i = 1; i < sourceHeight - 1; i++) {
-            for (j = 1; j < sourceWidth - 1; j++) {
+        for (i = 0; i < sourceHeight; i++) {
+            for (j = 0; j < sourceWidth; j++) {
                 int[] r = new int[9];
                 int[] g = new int[9];
                 int[] b = new int[9];
 
                 for (int m = 0; m < 3; m++) {
                     for (int n = 0; n < 3; n++) {
-                        int rgb = source.getRGB(i + m - 1, j + n - 1);
+                        if (i + m - 1 < 0) {
+                            sourcePixelX = 0;
+                        }
+                        else if (i + m - 1 > sourceWidth - 1) {
+                            sourcePixelX = 0;
+                        }
+                        else {
+                            sourcePixelX = i + m - 1;
+                        }
+                        if (j + n - 1 < 0) {
+                            sourcePixelY = 0;
+                        }
+                        else if (j + n - 1 > sourceHeight - 1) {
+                            sourcePixelY = 0;
+                        }
+                        else {
+                            sourcePixelY = j + n - 1;
+                        }
+
+                        int rgb = source.getRGB(sourcePixelX, sourcePixelY);
                         int red = (rgb >> 16) & 255;
                         int green = (rgb >> 8) & 255;
                         int blue = rgb & 255;
@@ -51,29 +72,12 @@ public class WatercoloringFilter {
                 Arrays.sort(b);
 
                 int newRGB = ((r[5] << 16) | (g[5] << 8) | b[5]);
-                Color color = new Color(newRGB);
-                buffer.setRGB(j, i, newRGB);
+                buffer.setRGB(i, j, newRGB);
             }
         }
 
-//        return buffer;
-
         for (i = 1; i < sourceHeight - 1; i++) {
             for (j = 1; j < sourceWidth - 1; j++) {
-                int g = buffer.getRGB(i, j);
-                int d = (buffer.getRGB(i - 1, j - 1) >> 16) & 255;
-                int e = (buffer.getRGB(i - 1, j) >> 16) & 255;
-                int f = (buffer.getRGB(i - 1, j + 1) >> 16) & 255;
-                int z = ((buffer.getRGB(i, j - 1) >> 16) & 255);
-                int t = (buffer.getRGB(i, j) >> 16) & 255;
-                int k = ((buffer.getRGB(i, j + 1) >> 16) & 255);
-                int o = ((buffer.getRGB(i + 1, j - 1) >> 16) & 255);
-                int s = ((buffer.getRGB(i + 1, j) >> 16) & 255);
-                int l = ((buffer.getRGB(i + 1, j + 1) >> 16) & 255);
-                double a = matrix[0][0] * ((buffer.getRGB(i - 1, j - 1) >> 16) & 255);
-                double b = matrix[0][1] * ((buffer.getRGB(i - 1, j) >> 16) & 255);
-                double c = matrix[0][2] * ((buffer.getRGB(i - 1, j + 1) >> 16) & 255);
-
                 redResult = (int) (matrix[0][0] * ((buffer.getRGB(i - 1, j - 1) >> 16) & 255) +
                         matrix[0][1] * ((buffer.getRGB(i - 1, j) >> 16) & 255) +
                         matrix[0][2] * ((buffer.getRGB(i - 1, j + 1) >> 16) & 255) +
@@ -83,12 +87,7 @@ public class WatercoloringFilter {
                         matrix[2][0] * ((buffer.getRGB(i + 1, j - 1) >> 16) & 255) +
                         matrix[2][1] * ((buffer.getRGB(i + 1, j) >> 16) & 255) +
                         matrix[2][2] * ((buffer.getRGB(i + 1, j + 1) >> 16) & 255));
-                if (redResult < 0) {
-                    redResult = 0;
-                }
-                if (redResult > 255) {
-                    redResult = 255;
-                }
+                redResult = normalizeColorPart(redResult);
 
                 greenResult = (int) (matrix[0][0] * ((buffer.getRGB(i - 1, j - 1) >> 8) & 255) +
                         matrix[0][1] * ((buffer.getRGB(i - 1, j) >> 8) & 255) +
@@ -99,12 +98,7 @@ public class WatercoloringFilter {
                         matrix[2][0] * ((buffer.getRGB(i + 1, j - 1) >> 8) & 255) +
                         matrix[2][1] * ((buffer.getRGB(i + 1, j) >> 8) & 255) +
                         matrix[2][2] * ((buffer.getRGB(i + 1, j + 1) >> 8) & 255));
-                if (greenResult < 0) {
-                    greenResult = 0;
-                }
-                if (greenResult > 255) {
-                    greenResult = 255;
-                }
+                greenResult = normalizeColorPart(greenResult);
 
                 blueResult = (int) (matrix[0][0] * (buffer.getRGB(i - 1, j - 1) & 255) +
                         matrix[0][1] * (buffer.getRGB(i - 1, j) & 255) +
@@ -115,16 +109,29 @@ public class WatercoloringFilter {
                         matrix[2][0] * (buffer.getRGB(i + 1, j - 1) & 255) +
                         matrix[2][1] * (buffer.getRGB(i + 1, j) & 255) +
                         matrix[2][2] * (buffer.getRGB(i + 1, j + 1) & 255));
-                if (blueResult < 0) {
-                    blueResult = 0;
-                }
-                if (blueResult > 255) {
-                    blueResult = 255;
-                }
+                blueResult = normalizeColorPart(blueResult);
+
+                int newRGB = ((redResult << 16) | (greenResult << 8) | blueResult);
+                result.setRGB(i, j, newRGB);
             }
-            int newRGB = ((redResult << 16) | (greenResult << 8) | blueResult);
-            result.setRGB(i, j, newRGB);
         }
+
+        for (i = 1; i < sourceWidth; i++) {
+            result.setRGB(i, 0, result.getRGB(i, 1));
+            result.setRGB(0, i, result.getRGB(1, i));
+        }
+        result.setRGB(0, 0, result.getRGB(1, 1));
         return result;
+    }
+
+    private int normalizeColorPart(int a) {
+        if (a > 255) {
+            a = 255;
+        }
+        if (a < 0) {
+            a = 0;
+        }
+
+        return a;
     }
 }

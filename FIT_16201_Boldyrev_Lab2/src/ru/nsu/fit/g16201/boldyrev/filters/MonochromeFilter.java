@@ -9,7 +9,7 @@ public class MonochromeFilter {
 
     }
 
-    public static BufferedImage filterMonochrome(MyImage myImage) {
+    public BufferedImage filterMonochrome(MyImage myImage) {
         BufferedImage source = myImage.getImage();
         int sourceHeight = source.getHeight();
         int sourceWidth = source.getWidth();

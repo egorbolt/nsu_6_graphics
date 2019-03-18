@@ -9,7 +9,7 @@ public class NegativeFilter {
 
     }
 
-    public static BufferedImage filterNegative(MyImage myImage) {
+    public BufferedImage filterNegative(MyImage myImage) {
         BufferedImage source = myImage.getImage();
         int sourceHeight = source.getHeight();
         int sourceWidth = source.getWidth();

@@ -1,8 +1,6 @@
 package ru.nsu.fit.g16201.boldyrev.view.frame;
 
-import ru.nsu.fit.g16201.boldyrev.filters.MonochromeFilter;
-import ru.nsu.fit.g16201.boldyrev.filters.NegativeFilter;
-import ru.nsu.fit.g16201.boldyrev.filters.WatercoloringFilter;
+import ru.nsu.fit.g16201.boldyrev.filters.*;
 import ru.nsu.fit.g16201.boldyrev.view.panels.MyImage;
 import ru.nsu.fit.g16201.boldyrev.view.panels.MyPanel;
 import ru.nsu.fit.g16201.boldyrev.view.utils.SaveLoad;
@@ -38,17 +36,22 @@ public class MainFrame extends JFrame {
         JButton bNew = createJButton("New");
         JButton bOpen = createJButton("Open");
         JButton bSave = createJButton("Save");
-        JButton bReplace = createJButton("Replace");
-        JButton bXor = createJButton("Xor");
-        JButton bImpacts = createJButton("Impacts");
+        JButton bNegative = createJButton("Negative");
+        JButton bMonochrome = createJButton("Monochrome");
+        JButton bWatercolor = createJButton("Watercolor");
+        JButton bGamma = createJButton("Gamma");
+        JButton bSharper = createJButton("Sharper");
+        JButton bStamping = createJButton("Stamping");
 
         toolBar.add(bNew);
         toolBar.add(bOpen);
         toolBar.add(bSave);
-        toolBar.add(new JToolBar.Separator());
-        toolBar.add(bReplace);
-        toolBar.add(bXor);
-        toolBar.add(bImpacts);
+        toolBar.add(bNegative);
+        toolBar.add(bMonochrome);
+        toolBar.add(bWatercolor);
+        toolBar.add(bGamma);
+        toolBar.add(bSharper);
+        toolBar.add(bStamping);
         add(toolBar, BorderLayout.NORTH);
         /*end of creating toolbar*/
 
@@ -69,26 +72,53 @@ public class MainFrame extends JFrame {
 
         ActionListener lNegative = l -> {
             MyImage source = myPanel.getZoneA();
-            BufferedImage result = NegativeFilter.filterNegative(source);
+            NegativeFilter f = new NegativeFilter();
+            BufferedImage result = f.filterNegative(source);
             myPanel.setZoneC(result);
         };
 
         ActionListener lMonochrome = l -> {
             MyImage source = myPanel.getZoneA();
-            BufferedImage result = MonochromeFilter.filterMonochrome(source);
+            MonochromeFilter f = new MonochromeFilter();
+            BufferedImage result = f.filterMonochrome(source);
             myPanel.setZoneC(result);
         };
 
         ActionListener lWatercolor = l -> {
             MyImage source = myPanel.getZoneA();
-            BufferedImage result = WatercoloringFilter.filterWatercolor(source);
+            WatercoloringFilter f = new WatercoloringFilter();
+            BufferedImage result = f.filterWatercolor(source);
+            myPanel.setZoneC(result);
+        };
+
+        ActionListener lGamma = l -> {
+            MyImage source = myPanel.getZoneA();
+            GammaFilter f = new GammaFilter(50);
+            BufferedImage result = f.filterGamma(source);
+            myPanel.setZoneC(result);
+        };
+
+        ActionListener lSharp = l -> {
+            MyImage source = myPanel.getZoneA();
+            SharpingFilter f = new SharpingFilter();
+            BufferedImage result = f.filterSharpering(source);
+            myPanel.setZoneC(result);
+        };
+
+        ActionListener lStamp = l -> {
+            MyImage source = myPanel.getZoneA();
+            StampingFilter f = new StampingFilter();
+            BufferedImage result = f.filterStamping(source);
             myPanel.setZoneC(result);
         };
 
         bOpen.addActionListener(lOpen);
-        bReplace.addActionListener(lNegative);
-        bXor.addActionListener(lMonochrome);
-        bImpacts.addActionListener(lWatercolor);
+        bNegative.addActionListener(lNegative);
+        bMonochrome.addActionListener(lMonochrome);
+        bWatercolor.addActionListener(lWatercolor);
+        bGamma.addActionListener(lGamma);
+        bSharper.addActionListener(lSharp);
+        bStamping.addActionListener(lStamp);
     }
 
     private JButton createJButton(String iconName) {
