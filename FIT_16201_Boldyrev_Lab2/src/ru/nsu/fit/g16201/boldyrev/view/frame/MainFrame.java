@@ -44,6 +44,7 @@ public class MainFrame extends JFrame {
         JButton bStamping = createJButton("Stamping");
         JButton bMagnifier = createJButton("Magnifier");
         JButton bBlur = createJButton("Blur");
+        JButton bRotate = createJButton("Rotate");
 
         toolBar.add(bNew);
         toolBar.add(bOpen);
@@ -56,6 +57,7 @@ public class MainFrame extends JFrame {
         toolBar.add(bStamping);
         toolBar.add(bMagnifier);
         toolBar.add(bBlur);
+        toolBar.add(bRotate);
         add(toolBar, BorderLayout.NORTH);
         /*end of creating toolbar*/
 
@@ -130,6 +132,13 @@ public class MainFrame extends JFrame {
             myPanel.setZoneC(result);
         };
 
+        ActionListener lRotate = l -> {
+            MyImage source = myPanel.getZoneA();
+            RotateFilter f = new RotateFilter();
+            BufferedImage result = f.filterRotate(source);
+            myPanel.setZoneC(result);
+        };
+
         bOpen.addActionListener(lOpen);
         bNegative.addActionListener(lNegative);
         bMonochrome.addActionListener(lMonochrome);
@@ -139,6 +148,7 @@ public class MainFrame extends JFrame {
         bStamping.addActionListener(lStamp);
         bMagnifier.addActionListener(lMagnifier);
         bBlur.addActionListener(lBlur);
+        bRotate.addActionListener(lRotate);
     }
 
     private JButton createJButton(String iconName) {
