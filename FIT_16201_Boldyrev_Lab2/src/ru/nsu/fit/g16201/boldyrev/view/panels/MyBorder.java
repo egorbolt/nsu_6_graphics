@@ -24,47 +24,43 @@ public class MyBorder extends AbstractBorder {
         int i;
         int k = 0;
 
-        for (i = 0; i < width; i++) {
-            if (!gap) {
-                Color c = new Color(image.getRGB(x + centerX, y + i + centerY));
-                int r = c.getRed();
-                int g = c.getGreen();
-                int b = c.getBlue();
-                g1.setColor(new Color(255 - r, 255 - g, 255 - b));
-                g1.drawLine(x, y + i, x, y + i);
-                c = new Color(image.getRGB(x + height - 1 + centerX, y + i + centerY));
-                r = c.getRed();
-                g = c.getGreen();
-                b = c.getBlue();
-                g1.setColor(new Color(255 - r, 255 - g, 255 - b));
-                g1.drawLine(x + height - 1, y + i, x + height - 1, y + i);
-                k++;
-                if (k % 10 == 0) {
-                    gap = true;
-                }
-                else {
-                    gap = false;
-                }
-            }
-            else {
-                Color c = new Color(image.getRGB(x + centerX, y + i + centerY));
-                g1.setColor(c);
-                g1.drawLine(x, y + i, x, y + i);
-                c = new Color(image.getRGB(x + height - 1 + centerX, y + i + centerY));
-                g1.setColor(c);
-                g1.drawLine(x + height - 1, y + i, x + height - 1, y + i);
-                k++;
-                if (k % 10 == 0) {
-                    gap = false;
-                }
-                else {
-                    gap = true;
+        try {
+            for (i = 0; i < width; i++) {
+                if (!gap) {
+                    Color c = new Color(image.getRGB(x + centerX, y + i + centerY));
+                    int r = c.getRed();
+                    int g = c.getGreen();
+                    int b = c.getBlue();
+                    g1.setColor(new Color(255 - r, 255 - g, 255 - b));
+                    g1.drawLine(x, y + i, x, y + i);
+                    c = new Color(image.getRGB(x + height - 1 + centerX, y + i + centerY));
+                    r = c.getRed();
+                    g = c.getGreen();
+                    b = c.getBlue();
+                    g1.setColor(new Color(255 - r, 255 - g, 255 - b));
+                    g1.drawLine(x + height - 1, y + i, x + height - 1, y + i);
+                    k++;
+                    if (k % 30 == 0) {
+                        gap = true;
+                    } else {
+                        gap = false;
+                    }
+                } else {
+                    Color c = new Color(image.getRGB(x + centerX, y + i + centerY));
+                    g1.setColor(c);
+                    g1.drawLine(x, y + i, x, y + i);
+                    c = new Color(image.getRGB(x + height - 1 + centerX, y + i + centerY));
+                    g1.setColor(c);
+                    g1.drawLine(x + height - 1, y + i, x + height - 1, y + i);
+                    k++;
+                    if (k % 20 == 0) {
+                        gap = false;
+                        k = 0;
+                    }
                 }
             }
-        }
 
-        for (i = 0; i < height; i++) {
-            if (!gap) {
+            for (i = 0; i < height; i++) {
                 if (!gap) {
                     Color c = new Color(image.getRGB(x + i + centerX, y + centerY));
                     int r = c.getRed();
@@ -72,36 +68,34 @@ public class MyBorder extends AbstractBorder {
                     int b = c.getBlue();
                     g1.setColor(new Color(255 - r, 255 - g, 255 - b));
                     g1.drawLine(x + i, y, x + i, y);
-                    c = new Color(image.getRGB( x + i + centerX, y - 1 + width + centerY));
+                    c = new Color(image.getRGB(x + i + centerX, y - 1 + width + centerY));
                     r = c.getRed();
                     g = c.getGreen();
                     b = c.getBlue();
                     g1.setColor(new Color(255 - r, 255 - g, 255 - b));
                     g1.drawLine(x + i, y - 1 + width, x + i, y - 1 + width);
                     k++;
-                    if (k % 10 == 0) {
+                    if (k % 30 == 0) {
                         gap = true;
-                    }
-                    else {
+                    } else {
                         gap = false;
                     }
-                }
-                else {
+                } else {
                     Color c = new Color(image.getRGB(x + i + centerX, y + centerY));
                     g1.setColor(c);
                     g1.drawLine(x + i, y, x + i, y);
-                    c = new Color(image.getRGB( x + i + centerX, y - 1 + width + centerY));
+                    c = new Color(image.getRGB(x + i + centerX, y - 1 + width + centerY));
                     g1.setColor(c);
                     g1.drawLine(x + i, y - 1 + width, x + i, y - 1 + width);
                     k++;
-                    if (k % 10 == 0) {
+                    if (k % 20 == 0) {
                         gap = false;
-                    }
-                    else {
-                        gap = true;
+                        k = 0;
                     }
                 }
             }
+        } catch (ArrayIndexOutOfBoundsException eOut) {
+
         }
     }
 }

@@ -50,7 +50,7 @@ public class MagnifierFilter {
                     r = (r1 + r2) / 2;
                     g = (g1 + g2) / 2;
                     b = (b1 + b2) / 2;
-                } else if((j - 1) % 2 == 0) {
+                } else if ((j - 1) % 2 == 0) {
                     int x = sourceWidth / 4 + (i - 2) / 2;
                     int y = sourceHeight / 4 + (j - 1) / 2;
 

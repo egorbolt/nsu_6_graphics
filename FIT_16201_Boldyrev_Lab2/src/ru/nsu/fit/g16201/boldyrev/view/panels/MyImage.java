@@ -11,24 +11,12 @@ public class MyImage extends JPanel {
     private final int ZONE_SIDE_SIZE = 350;
     private BufferedImage image;
     private BufferedImage imageBorders;
-    private int selectHeight;
-    private int selectWidth;
-    private int selectHeightShow;
-    private int selectWidthShow;
-    private int selectSize;
-
-
+    private int select;
+    private int newHeight;
+    private int newWidth;
 
     public MyImage() {
 
-    }
-
-    public MyImage(File newImage) {
-        try {
-            this.image = ImageIO.read(new File("./FIT_16201_Boldyrev_Lab2_Data/Lena.bmp"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
 
     public MyImage(BufferedImage image) {
@@ -48,36 +36,60 @@ public class MyImage extends JPanel {
         width = image.getWidth();
         height = image.getHeight();
 
-
-        if (width <= ZONE_SIDE_SIZE && height <= ZONE_SIDE_SIZE) {
-            selectHeight = height;
-            selectWidth = width;
-            Image buffer = image.getScaledInstance(ZONE_SIDE_SIZE, ZONE_SIDE_SIZE, Image.SCALE_SMOOTH);
-//            imageBorders = new BufferedImage(buffer.getWidth(null), buffer.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-            imageBorders = itobi(buffer);
-            g.drawImage(image, 0, 0, this);
+        select = 350 * 350;
+        if (height > width) {
+            select /= height;
         }
         else {
-            double resizing = (double)(width) / height;
-
-            if (height > width) {
-                selectHeight = selectWidth = ZONE_SIDE_SIZE * ZONE_SIDE_SIZE / height;
-            }
-            else {
-                selectHeight = selectWidth = ZONE_SIDE_SIZE * ZONE_SIDE_SIZE / width;
-            }
-
-            if (resizing >= 1) {
-                Image buffer = image.getScaledInstance(ZONE_SIDE_SIZE, (int) (ZONE_SIDE_SIZE / resizing), Image.SCALE_SMOOTH);
-                imageBorders = itobi(buffer);
-                g.drawImage(image, 0, 0, ZONE_SIDE_SIZE, (int) (ZONE_SIDE_SIZE / resizing), null);
-            } else {
-                Image buffer = image.getScaledInstance((int) (ZONE_SIDE_SIZE * resizing), ZONE_SIDE_SIZE, Image.SCALE_SMOOTH);
-                imageBorders = itobi(buffer);
-                g.drawImage(image, 0, 0, (int) (ZONE_SIDE_SIZE * resizing), ZONE_SIDE_SIZE, null);
-            }
+            select /= width;
         }
-//        g.drawImage(image, 0, 0, this);
+
+//        if (width <= ZONE_SIDE_SIZE && height <= ZONE_SIDE_SIZE) {
+//            selectHeight = height;
+//            selectWidth = width;
+//            Image buffer = image.getScaledInstance(ZONE_SIDE_SIZE, ZONE_SIDE_SIZE, Image.SCALE_SMOOTH);
+//            imageBorders = itobi(buffer);
+//            g.drawImage(image, 0, 0, this);
+//        }
+//        else {
+//            double resizing = (double) (width) / height;
+//
+//            if (height > width) {
+//                selectHeight = selectWidth = ZONE_SIDE_SIZE * ZONE_SIDE_SIZE / height;
+//            }
+//            else {
+//                selectHeight = selectWidth = ZONE_SIDE_SIZE * ZONE_SIDE_SIZE / width;
+//            }
+//
+//            if (resizing >= 1) {
+//                Image buffer = image.getScaledInstance(ZONE_SIDE_SIZE, (int) (ZONE_SIDE_SIZE / resizing), Image.SCALE_SMOOTH);
+//                imageBorders = itobi(buffer);
+//                g.drawImage(image, 0, 0, ZONE_SIDE_SIZE, (int) (ZONE_SIDE_SIZE / resizing), null);
+//            } else {
+//                Image buffer = image.getScaledInstance((int) (ZONE_SIDE_SIZE * resizing), ZONE_SIDE_SIZE, Image.SCALE_SMOOTH);
+//                imageBorders = itobi(buffer);
+//                g.drawImage(image, 0, 0, (int) (ZONE_SIDE_SIZE * resizing), ZONE_SIDE_SIZE, null);
+//            }
+//        }
+
+        double resize = (double) (width) / height;
+
+        if (resize >= 1) {
+            newWidth = ZONE_SIDE_SIZE;
+            newHeight = (int) (ZONE_SIDE_SIZE / resize);
+            g.drawImage(image, 0, 0, ZONE_SIDE_SIZE, (int) (ZONE_SIDE_SIZE / resize), null);
+            Image buffer = image.getScaledInstance(ZONE_SIDE_SIZE, (int) (ZONE_SIDE_SIZE / resize), Image.SCALE_SMOOTH);
+            imageBorders = itobi(buffer);
+        }
+
+        else {
+            newWidth = (int) (ZONE_SIDE_SIZE * resize);
+            newHeight = ZONE_SIDE_SIZE;
+            g.drawImage(image, 0, 0, (int) (ZONE_SIDE_SIZE * resize), ZONE_SIDE_SIZE, null);
+            Image buffer = image.getScaledInstance(ZONE_SIDE_SIZE, (int) (ZONE_SIDE_SIZE / resize), Image.SCALE_SMOOTH);
+            imageBorders = itobi(buffer);
+        }
+
     }
 
     public void loadImage(File file) {
@@ -90,6 +102,14 @@ public class MyImage extends JPanel {
         repaint();
     }
 
+    private BufferedImage itobi(Image source) {
+        BufferedImage result = new BufferedImage(source.getWidth(null), source.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g1 = result.createGraphics();
+        g1.drawImage(source, 0, 0, null);
+        g1.dispose();
+        return result;
+    }
+
     public BufferedImage getImage() {
         return this.image;
     }
@@ -99,27 +119,25 @@ public class MyImage extends JPanel {
         repaint();
     }
 
-    public int getSelectSize() {
-        return this.selectSize;
+    public int getImageWidth() {
+        return image.getWidth();
     }
 
-    public int getSelectHeight() {
-        return this.selectHeight;
+    public int getImageHeight() {
+        return image.getHeight();
     }
 
-    public int getSelectWidth() {
-        return this.selectWidth;
-    }
 
     public BufferedImage getImageBorders() {
         return this.imageBorders;
     }
 
-    private BufferedImage itobi(Image source) {
-        BufferedImage result = new BufferedImage(source.getWidth(null), source.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g1 = result.createGraphics();
-        g1.drawImage(source, 0, 0, null);
-        g1.dispose();
-        return result;
+    public int getSelect() {
+        return select;
     }
+
+    public int getNewHeight() {
+        return newHeight;
+    }
+
 }
